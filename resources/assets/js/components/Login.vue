@@ -3,6 +3,8 @@
         <div class="alert alert-danger" v-if="error">
             <p>There was an error, unable to sign in with those credentials.</p>
         </div>
+        
+        
         <form autocomplete="off" @submit.prevent="login" method="post">
             <div class="form-group">
                 <label for="email">E-mail</label>
@@ -16,3 +18,33 @@
         </form>
     </div>
 </template>
+
+
+
+<script>
+  export default {
+    data(){
+      return {
+        email: null,
+        password: null,
+        error: false
+      }
+    },
+    methods: {
+      login(){
+        var app = this
+        this.$auth.login({
+            params: {
+              email: app.email,
+              password: app.password
+            }, 
+            success: function () {},
+            error: function () {},
+            rememberMe: true,
+            redirect: '/dashboard',
+            fetchUser: true,
+        });       
+      },
+    }
+  } 
+</script>

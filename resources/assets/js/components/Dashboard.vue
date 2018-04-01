@@ -1,6 +1,32 @@
 <template>
-    <div>
-    <h1>Our Cool Dashboard</h1>
-     <a href="#" @click.prevent="$auth.logout()">Logout</a>
-     </div>
+   
+   <main class="container-fluid">
+       <div class="row">
+             <LeftNav></LeftNav>
+            <MainDashboard></MainDashboard>
+       </div>
+   </main>
+     
 </template>
+
+
+     
+<script>
+    import LeftNav from './LeftNav.vue'
+    import MainDashboard from './MainDashboard.vue'
+
+   
+   
+    export default {
+        components: {
+            LeftNav,
+            MainDashboard,
+        },
+
+    }
+    
+    
+    
+    
+    
+</script>

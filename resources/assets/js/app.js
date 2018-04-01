@@ -7,6 +7,8 @@ import Dashboard from './components/Dashboard.vue';
 import Home from './components/Home.vue';
 import Register from './components/Register.vue';
 import Login from './components/Login.vue';
+import Users from './components/Users.vue';
+
 Vue.use(VueRouter);
 Vue.use(VueAxios, axios);
 axios.defaults.baseURL = window.location.origin + '/api';
@@ -24,6 +26,14 @@ const router = new VueRouter({
             auth: true,
             
         }
+    },{
+        path: '/users',
+        name: 'users',
+        component: Users,
+         meta: {
+            auth: true,
+            
+        }
     }]
     
     
@@ -37,10 +47,12 @@ var authOptions = {
 };
 
 
-
 Vue.router = router
-
 Vue.use(require('@websanova/vue-auth'),authOptions)
+
+
+
+
 
 
 App.router = Vue.router

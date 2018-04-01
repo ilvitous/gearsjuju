@@ -1,38 +1,80 @@
+@mixin breakpoint($class) {
+  @if $class == xs {
+    @media (max-width: 767px) { @content; }
+  }
+ 
+  @else if $class == sm {
+    @media (min-width: 576px) { @content; }
+  }
+ 
+  @else if $class == md {
+    @media (min-width: 768px) { @content; }
+  }
+ 
+  @else if $class == lg {
+    @media (min-width: 992px) { @content; }
+  }
 
-// Body
-$body-bg: #f5f8fa;
+  @else if $class == xl {
+    @media (min-width: 1200px) { @content; }
+  }
+ 
+  @else {
+    @warn "Breakpoint mixin supports: xs, sm, md, lg, xl";
+  }
+}
 
-// Borders
-$laravel-border-color: darken($body-bg, 10%);
-$list-group-border: $laravel-border-color;
-$navbar-default-border: $laravel-border-color;
-$panel-default-border: $laravel-border-color;
-$panel-inner-border: $laravel-border-color;
 
-// Brands
-$brand-primary: #3097D1;
-$brand-info: #8eb4cb;
-$brand-success: #2ab27b;
-$brand-warning: #cbb956;
-$brand-danger: #bf5329;
+@mixin transform ($x, $y, $z) {
+  -webkit-transform: translate3d($x,$y,$z);
+  -moz-transform: translate3d($x,$y,$z);
+  transform: translate3d($x,$y,$z);
+}
 
-// Typography
-$icon-font-path: "~bootstrap-sass/assets/fonts/bootstrap/";
-$font-family-sans-serif: "Raleway", sans-serif;
-$font-size-base: 14px;
-$line-height-base: 1.6;
-$text-color: #636b6f;
+@mixin transformStyle ($transformStyle) {
+    -webkit-transform-style: $transformStyle;
+    -moz-transform-style: $transformStyle;
+    transform-style: $transformStyle;
+}
 
-// Navbar
-$navbar-default-bg: #fff;
+@mixin backface-visibility () {
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+     backface-visibility: hidden;
+}
 
-// Buttons
-$btn-default-color: $text-color;
 
-// Inputs
-$input-border: lighten($text-color, 40%);
-$input-border-focus: lighten($brand-primary, 25%);
-$input-color-placeholder: lighten($text-color, 30%);
+@mixin transition($transition...) {
+    -moz-transition:    $transition;
+    -o-transition:      $transition;
+    -webkit-transition: $transition;
+    transition:         $transition;
+}
+@mixin transition-property($property...) {
+    -moz-transition-property:    $property;
+    -o-transition-property:      $property;
+    -webkit-transition-property: $property;
+    transition-property:         $property;
+}
+@mixin transition-duration($duration...) {
+    -moz-transition-property:    $duration;
+    -o-transition-property:      $duration;
+    -webkit-transition-property: $duration;
+    transition-property:         $duration;
+}
+@mixin transition-timing-function($timing...) {
+    -moz-transition-timing-function:    $timing;
+    -o-transition-timing-function:      $timing;
+    -webkit-transition-timing-function: $timing;
+    transition-timing-function:         $timing;
+}
+@mixin transition-delay($delay...) {
+    -moz-transition-delay:    $delay;
+    -o-transition-delay:      $delay;
+    -webkit-transition-delay: $delay;
+    transition-delay:         $delay;
+}
+// SASS
 
-// Panels
-$panel-default-heading-bg: #fff;
+$gray10:#f3f3f3;
+

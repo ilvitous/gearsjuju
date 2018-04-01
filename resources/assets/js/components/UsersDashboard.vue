@@ -10,7 +10,7 @@
         <thead>
           <tr>
             <th>Username</th>
-            <th>Email</th>
+            <th>Emails</th>
             <th>Role</th>
             <th></th>
           </tr>

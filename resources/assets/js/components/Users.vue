@@ -2,7 +2,9 @@
    
    <main>
        <LeftNav></LeftNav>
+       <div class="main_container">
        <UsersDashboard></UsersDashboard>
+       </div>
    </main>
      
 </template>
@@ -20,6 +22,8 @@
             LeftNav,
             UsersDashboard,
         },
+        
+        
 
     }
     

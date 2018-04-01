@@ -6,7 +6,7 @@
         <ul>
             <li><a href="">Events</a></li>
             <li><a href="">Equipment</a></li>
-            <li><a href="">Users</a></li>
+            <li><router-link :to="{ name: 'users' }">Users</router-link></li>
             <li><a href="#" @click.prevent="$auth.logout()">Logout</a></li>
         </ul>
     

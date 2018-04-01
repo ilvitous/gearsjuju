@@ -57,6 +57,13 @@ body{
     font-weight: 300;
 }
 
+// typo
+
+h1{
+  font-size: 2.5em;
+  margin-bottom: 30px;
+}
+
 // login form
 .wrapper {  
   margin-top: 80px;
@@ -136,4 +143,13 @@ a:hover, a:active, a:focus {
    outline: 0;
    text-decoration: none;
    color: inherit;
+}
+
+.main_container{
+  position: fixed;
+  left : 300px;
+  top : 0px;
+  width: calc(100vw - 300px);
+  height: 100vh;
+  padding: 30px;
 }

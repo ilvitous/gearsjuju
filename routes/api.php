@@ -28,6 +28,11 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   
 });
 
+Route::group(['middleware' => 'jwt.auth'], function(){
+  Route::get('v1/users', 'UserController@users_all');
+
+});
+
 Route::group(['middleware' => 'jwt.refresh'], function(){
   Route::get('auth/refresh', 'AuthController@refresh');
 });

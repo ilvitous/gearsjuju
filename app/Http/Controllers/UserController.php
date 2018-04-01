@@ -19,14 +19,14 @@ class UserController extends Controller
         $name = $user->name;
         $email = $user->email;
         $id = $user->id;
-        $role = $user->roles()->first(); 
+        // $role = $user->roles()->first(); 
         
         $user_to_add = array(
          
          'name' => $name,
          'email' => $email,
          'id' => $id,
-         'role'  => $role->name,
+        //  'role'  => $role->name,
         
             
         );

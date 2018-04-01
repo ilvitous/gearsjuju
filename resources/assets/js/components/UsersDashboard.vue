@@ -20,7 +20,7 @@
           <tr v-for="user in users">
             <td class="align-middle">{{ user.name }}</td>
             <td class="align-middle">{{ user.email }}</td>
-            <td class="align-middle">{{ user.role }}</td>
+            <!--<td class="align-middle">{{ user.role }}</td>-->
             <td class="align-middle">
                 <button  
                 @click="edit_user"

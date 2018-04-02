@@ -6,7 +6,14 @@
         <ul>
             <li><a href="">Events</a></li>
             <li><a href="">Equipment</a></li>
-            <li><router-link :to="{ name: 'users' }">Users</router-link></li>
+            <li>
+                <router-link :to="{ name: 'users' }">Users</router-link>
+                    
+                    <ul>
+                        <li><router-link :to="{ name: 'user-categories' }">Categories</router-link></li>
+                    </ul>
+                
+            </li>
             <li><a href="#" @click.prevent="$auth.logout()">Logout</a></li>
         </ul>
     
@@ -45,6 +52,15 @@
                padding-bottom: 15px;
                border-bottom: solid 1px #ccc;
                text-transform: uppercase;
+               
+               ul{
+                   li{
+                        border-bottom: none;
+                        font-size: 0.8em;
+                        padding-bottom: 0px;
+                        padding-left: 15px;
+                   }
+               }
                a{
                    display: block;
                    opacity: 1;

@@ -8,6 +8,7 @@ import Home from './components/Home.vue';
 import Register from './components/Register.vue';
 import Login from './components/Login.vue';
 import Users from './components/Users.vue';
+import UserCat from './components/UserCat.vue';
 
 Vue.use(VueRouter);
 Vue.use(VueAxios, axios);
@@ -33,11 +34,22 @@ const router = new VueRouter({
          meta: {
             auth: true,
             
+        },
+    },{
+        path: '/user-categories',
+        name: 'user-categories',
+        component: UserCat,
+         meta: {
+            auth: true,
         }
-    }]
+    }
+    ]
     
     
 });
+
+
+
 
 var authOptions = {
     auth: require('@websanova/vue-auth/drivers/auth/bearer.js'),

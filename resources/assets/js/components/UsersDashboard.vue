@@ -6,7 +6,7 @@
         </div>
         
 
-    <table class="table">
+    <table class="table" v-if="users">
         <thead>
           <tr>
             <th>Username</th>
@@ -20,11 +20,15 @@
           <tr v-for="user in users">
             <td class="align-middle">{{ user.name }}</td>
             <td class="align-middle">{{ user.email }}</td>
-            <!--<td class="align-middle">{{ user.role }}</td>-->
+            <td class="align-middle">{{ user.role }}</td>
             <td class="align-middle">
                 <button  
                 @click="edit_user"
-                :data-id="user.id" class="btn float-right">Edit</button></td>
+                :data-id="user.id" 
+                class="btn float-right">
+                    Edit
+                </button>
+                </td>
           </tr>
         </tbody>
         

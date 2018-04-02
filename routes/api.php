@@ -30,7 +30,13 @@ Route::group(['middleware' => 'jwt.auth'], function(){
 
 Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('v1/users', 'UserController@users_all');
-
+  Route::get('v1/user-categories', 'UserController@userCategoriesAll');
+  Route::post('v1/register-role', 'UserController@registerRole');
+  Route::post('v1/delete-role', 'UserController@deleteRole');
+  
+  
+  
+  
 });
 
 Route::group(['middleware' => 'jwt.refresh'], function(){

@@ -7,6 +7,7 @@ use App\Role;
 
 use App\Http\Requests\RegisterRoleRequest;
 use App\Http\Requests\DeleteRoleRequest;
+use App\Http\Requests\SetRoleRequest;
 
 
 
@@ -27,15 +28,22 @@ class UserController extends Controller
         $id = $user->id;
         $role = $user->roles()->first(); 
         
-        $user_to_add = array(
-         
-         'name' => $name,
-         'email' => $email,
-         'id' => $id,
-         'role'  => $role->name,
+        if($role){
+            $user_to_add = array(
+            'name' => $name,
+            'email' => $email,
+            'id' => $id,
+            'role'  => $role->name,
+            );
+        }else{
+            $user_to_add = array(
+             'name' => $name,
+             'email' => $email,
+             'id' => $id,
+            );
+        }
         
-            
-        );
+        
         
         array_push($users_array,$user_to_add);
         
@@ -88,6 +96,20 @@ class UserController extends Controller
 
         $role = Role::find($request->id);
         $role->forceDelete();
+        return response([
+            'status' => 'success',
+           ], 200);
+           
+    }
+    
+    
+    public function setRole(SetRoleRequest $request){
+
+        $role = Role::where('id', $request->role)->first();
+        $user = User::find($request->user);
+        $user->roles()->attach($role);
+        $user->save();
+        
         return response([
             'status' => 'success',
            ], 200);

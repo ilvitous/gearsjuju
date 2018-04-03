@@ -7,6 +7,8 @@ use App\Http\Requests\RegisterFormRequest;
 use Illuminate\Foundation\Auth\User;
 use JWTAuth;
 use Auth;
+use App\Role;
+
 
 class AuthController extends Controller
 {
@@ -16,6 +18,9 @@ class AuthController extends Controller
     $user->email = $request->email;
     $user->name = $request->name;
     $user->password = bcrypt($request->password);
+    
+    
+    
     $user->save();
     return response([
         'status' => 'success',

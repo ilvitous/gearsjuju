@@ -36,7 +36,9 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('v1/roles-all', 'UserController@userCategoriesAll');
   
   Route::post('v1/set-role', 'UserController@setRole');
-  
+  Route::post('v1/get-user', 'UserController@get_user');
+  Route::post('v1/delete-user', 'UserController@delete_user');
+  Route::post('v1/edit-user', 'UserController@editUser');
   
   
   

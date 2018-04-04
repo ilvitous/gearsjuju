@@ -9,6 +9,7 @@ import Register from './components/Register.vue';
 import Login from './components/Login.vue';
 import Users from './components/Users.vue';
 import UserCat from './components/UserCat.vue';
+import Events from './components/Events.vue';
 
 Vue.use(VueRouter);
 Vue.use(VueAxios, axios);
@@ -39,6 +40,13 @@ const router = new VueRouter({
         path: '/user-categories',
         name: 'user-categories',
         component: UserCat,
+         meta: {
+            auth: true,
+        }
+    },{
+        path: '/events',
+        name: 'events',
+        component: Events,
          meta: {
             auth: true,
         }

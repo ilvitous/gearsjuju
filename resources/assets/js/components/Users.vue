@@ -311,13 +311,3 @@
     
 </script>
 
-
-<style lang="scss" scoped>
-    
-   h4{
-        font-weight: 700;
-        font-size: 1.5em;
-        text-transform: uppercase;
-   }
-    
-</style>

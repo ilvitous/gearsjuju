@@ -154,6 +154,12 @@ h2 {
   margin-bottom: 30px;
 }
 
+h4 {
+  font-weight: 700;
+  font-size: 1.5em;
+  text-transform: uppercase;
+}
+
 .wrapper {
   margin-top: 80px;
   margin-bottom: 80px;
@@ -249,5 +255,10 @@ a:focus {
   width: calc(100vw - 300px);
   height: 100vh;
   padding: 30px;
+}
+
+thead {
+  font-weight: 700;
+  text-transform: uppercase;
 }
 

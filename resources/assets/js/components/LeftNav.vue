@@ -4,13 +4,13 @@
         <img class="img-responsive" src="/assets/img/gearsjuju.svg">
         
         <ul>
-            <li><a href="">Events</a></li>
+            <li><router-link :to="{ name: 'events' }">Events</router-link></li>
             <li><a href="">Equipment</a></li>
             <li>
                 <router-link :to="{ name: 'users' }">Users</router-link>
                     
                     <ul>
-                        <li><router-link :to="{ name: 'user-categories' }">Categories</router-link></li>
+                        <li><router-link :to="{ name: 'user-categories' }">Roles</router-link></li>
                     </ul>
                 
             </li>

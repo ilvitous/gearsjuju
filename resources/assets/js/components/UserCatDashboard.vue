@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="row">
-            <div class="col-6"><h1>User Categories</h1></div>
+            <div class="col-6"><h1>User Roles</h1></div>
             <div class="col-6">
                 
                 <button 
@@ -19,7 +19,7 @@
         <table class="table" v-if="categories">
         <thead>
           <tr>
-            <th>Category</th>
+            <th>Role</th>
             <th></th>
           </tr>
         </thead>
@@ -42,7 +42,7 @@
       
       <div class="row" v-if="add_new">
           <div class="col-12">
-            <h2>Add New User Category</h2>
+            <h2>Add New User Role</h2>
             
             <form id="register" autocomplete="off" @submit.prevent="register" v-if="!success" method="post">
                 <div class="form-group" v-bind:class="{ 'has-error': error && errors.name }">

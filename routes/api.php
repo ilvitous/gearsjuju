@@ -46,6 +46,11 @@ Route::group(['middleware' => 'jwt.auth'], function(){
 // events
 Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('v1/events/all', 'GearEventController@get_all_events');
+  Route::post('v1/events/add', 'GearEventController@add_new_event');
+  Route::post('v1/events/delete', 'GearEventController@delete_event');
+  Route::post('v1/events/edit', 'GearEventController@edit_event');
+  Route::post('v1/events/event', 'GearEventController@single_event');
+  
 });
 // events
 

@@ -10,9 +10,16 @@ import Login from './components/Login.vue';
 import Users from './components/Users.vue';
 import UserCat from './components/UserCat.vue';
 import Events from './components/Events.vue';
-
+import Event from './components/Event.vue';
+import mDatePicker from 'vue-multi-date-picker'
+// ...
+Vue.use(mDatePicker)
 Vue.use(VueRouter);
 Vue.use(VueAxios, axios);
+
+
+
+
 axios.defaults.baseURL = window.location.origin + '/api';
 const router = new VueRouter({
     routes: [{
@@ -47,6 +54,13 @@ const router = new VueRouter({
         path: '/events',
         name: 'events',
         component: Events,
+         meta: {
+            auth: true,
+        }
+    },{
+        path: '/event/:id', 
+        component: Event,
+        name: 'event',
          meta: {
             auth: true,
         }

@@ -19,6 +19,7 @@
                     <ul>
                         <li>Dates: <strong>{{event.days}}</strong></li>
                         <li>Address: <strong>{{event.address}}</strong></li>
+                        <li>Archived: <strong>{{event.archived}}</strong></li>
                     </ul>
                 </div>
                 
@@ -81,7 +82,7 @@
                                     days = first_day
                                 }
                                 
-                                this.event =  {title:response.data.data.title, address:response.data.data.address, days:days, id:response.data.data.id};
+                                this.event =  {title:response.data.data.title, address:response.data.data.address, days:days, id:response.data.data.id, archived : response.data.data.archived };
                                 
 
                                 

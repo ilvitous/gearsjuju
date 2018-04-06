@@ -46,13 +46,22 @@ Route::group(['middleware' => 'jwt.auth'], function(){
 // events
 Route::group(['middleware' => 'jwt.auth'], function(){
   Route::get('v1/events/all', 'GearEventController@get_all_events');
+  Route::get('v1/events/archived', 'GearEventController@get_all_archived_events');
   Route::post('v1/events/add', 'GearEventController@add_new_event');
   Route::post('v1/events/delete', 'GearEventController@delete_event');
   Route::post('v1/events/edit', 'GearEventController@edit_event');
+  Route::post('v1/events/archive', 'GearEventController@archive_event');
   Route::post('v1/events/event', 'GearEventController@single_event');
-  
 });
 // events
+
+
+// categories
+Route::group(['middleware' => 'jwt.auth'], function(){
+  Route::post('v1/categories/add', 'CategoryController@add_new_category');
+  Route::get('v1/categories/all', 'CategoryController@get_all_categories');
+});
+// categories
 
 
 Route::group(['middleware' => 'jwt.refresh'], function(){

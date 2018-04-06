@@ -11,6 +11,11 @@ import Users from './components/Users.vue';
 import UserCat from './components/UserCat.vue';
 import Events from './components/Events.vue';
 import Event from './components/Event.vue';
+import EventsArchived from './components/EventsArchived.vue';
+import Equipments from './components/Equipments.vue';
+import EquipmentCategories from './components/EquipmentCategories.vue';
+
+
 import mDatePicker from 'vue-multi-date-picker'
 // ...
 Vue.use(mDatePicker)
@@ -64,9 +69,30 @@ const router = new VueRouter({
          meta: {
             auth: true,
         }
+    },{
+        path: '/events-archived', 
+        component: EventsArchived,
+        name: 'event-archived',
+         meta: {
+            auth: true,
+        }
+    },{
+        path: '/equipments', 
+        component: Equipments,
+        name: 'equipments',
+         meta: {
+            auth: true,
+        }
+    },{
+        path: '/equipment-categories', 
+        component: EquipmentCategories,
+        name: 'equipment-categories',
+         meta: {
+            auth: true,
+        }
     }
     ]
-    
+  
     
 });
 

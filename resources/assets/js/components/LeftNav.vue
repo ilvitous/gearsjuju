@@ -4,8 +4,24 @@
         <img class="img-responsive" src="/assets/img/gearsjuju.svg">
         
         <ul>
-            <li><router-link :to="{ name: 'events' }">Events</router-link></li>
-            <li><a href="">Equipment</a></li>
+            <li>
+                <router-link :to="{ name: 'events' }">Events</router-link>
+                <ul>
+                    <li>
+                       <router-link :to="{ name: 'event-archived' }">Archived</router-link>
+                    </li>
+                </ul>
+            </li>
+           
+            <li>
+                <router-link :to="{ name: 'equipments' }">Equipments</router-link>
+                    <ul>
+                        <li>Checked Out</li>
+                        <li><router-link :to="{ name: 'equipment-categories' }">Categories</router-link></li>
+                    </ul>
+                </li>
+            
+            
             <li>
                 <router-link :to="{ name: 'users' }">Users</router-link>
                     

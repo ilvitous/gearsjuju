@@ -16,7 +16,16 @@ class GearEventController extends Controller
     //
     
     public function get_all_events(){
-        $events = Gearevent::orderBy('created_at', 'desc')->get();
+        $events = Gearevent::orderBy('created_at', 'desc')->where('archived', false)->get();
+         return response([
+            'status' => 'success',
+            'data' => $events
+           ], 200);
+    }
+    
+    
+     public function get_all_archived_events(){
+        $events = Gearevent::orderBy('created_at', 'desc')->where('archived', true)->get();
          return response([
             'status' => 'success',
             'data' => $events
@@ -31,7 +40,7 @@ class GearEventController extends Controller
         $event->title = $request->title;
         $event->dates = $dates;
         $event->address = $request->address;
-
+        $event->archived = false;
         
         $event->save();
         
@@ -48,6 +57,17 @@ class GearEventController extends Controller
     public function delete_event(DeleteEventRequest $request){
         $event = Gearevent::find($request->id);
         $event->forceDelete();
+        return response([
+            'status' => 'success',
+           ], 200);
+
+    }
+    
+    
+    public function archive_event(DeleteEventRequest $request){
+        $event = Gearevent::find($request->id);
+        $event->archived = true;
+        $event->save();
         return response([
             'status' => 'success',
            ], 200);

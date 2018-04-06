@@ -106,12 +106,7 @@
                             Delete
                         </button>
                         
-                         <button  
-                            type="button"
-                            class="btn btn-warning"
-                            @click="archiveEvent">
-                            Archive
-                        </button>
+                       
                         
                         <button type="submit" class="btn btn-primary">Save</button>
                        
@@ -138,16 +133,7 @@
         <div class="main_container">
            
             <div class="row">
-                <div class="col-6"><h1>Events</h1></div>
-                <div class="col-6">
-                    <button 
-                    type="button" 
-                    class="btn btn-primary float-right"
-                    data-toggle="modal" data-target="#addEvent"
-                    @click="clearVar"
-                    >Add New Event
-                    </button>
-                </div>
+                <div class="col-6"><h1>Archived Events</h1></div>
             </div>
         
          
@@ -245,7 +231,7 @@
             refresTable : function(){
                 
                 var arrayOfEvents = [];
-                this.$http.get('v1/events/all').then(response => {
+                this.$http.get('v1/events/archived').then(response => {
                 arrayOfEvents = response.data.data;
                 
                     
@@ -292,32 +278,7 @@
                 
             
             
-            newEvent : function (event){
-            var app = this
-            var title = app.title
-            var dates = app.dates
-            var address = app.address
-
-            this.$http.post(`v1/events/add`, {
-                            title : title,
-                            dates : dates,
-                            address : address
-                        }).then(response => {
-                            if(response.data.status == 'success'){
-                                this.refresTable()
-                                $('#addEvent').modal('hide');
-                               
-                            }
-                            else{
-                                app.error = true;
-                                app.errors = response.errors;
-                            }
-                        })
-           
-          
-           
-           },
-           
+        
            editEventSubmit : function(event){
             var app = this
             var title = app.title

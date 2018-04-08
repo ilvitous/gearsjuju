@@ -14,7 +14,7 @@
                   
                 <div class="modal-body">
                     
-                    <form autocomplete="off" @submit.prevent="newEvent" id="register" method="post">
+                    <form autocomplete="off" @submit.prevent="newEquipment" id="register" method="post">
                        
                         <div class="form-group" v-bind:class="{ 'has-error': error && errors.name }">
                             <label for="title">Name</label>
@@ -29,10 +29,22 @@
                             <span class="help-block" v-if="error && errors.email">{{ errors.address }}</span>
                         </div>
                         
+                        
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Category</label>
+                            <select class="form-control" v-model="category" required>
+                                <option 
+                                v-for="category in categories" 
+                                :value="category.id" 
+                                >
+                                  {{category.name}}
+                                </option>
+                            </select>
+                        </div>
                       
                         
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Add New Event</button>
+                        <button type="submit" class="btn btn-primary">Add New Equipment</button>
                         
                         
                         </form>
@@ -57,11 +69,33 @@
                     type="button" 
                     class="btn btn-primary float-right"
                     data-toggle="modal" data-target="#addEquipment"
-                    
+                    @click = "addEquipment"
                     >Add New Equipment
                     </button>
                 </div>
             </div>
+            
+            
+            <table class="table" v-if="equipments">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Serial</th>
+                    <th>Category</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="equipment in equipments">
+                    <td class="align-middle">{{ equipment.name }}</td>
+                     <td class="align-middle">{{ equipment.serial }}</td>
+                    <td class="align-middle">{{ equipment.category }}</td>
+                    <td class="align-middle"></td>
+                  </tr>
+                </tbody>
+            </table>
+            
+            
         </div>
     </main>
 </template>
@@ -83,14 +117,58 @@
                 serial: '',
                 error: false,
                 errors: {},
+                categories: '',
+                category: '',
+                equipments: '',
+                
             };
         },
         
         mounted() {
+            
+            this.refresTable()
         },
         
         
         methods : {
+            
+            addEquipment(){
+                this.$http.get('v1/categories/all').then(response => {
+                this.categories = response.data.data;
+                })
+                
+            },
+            
+            newEquipment : function(event){
+                var app = this
+                 this.$http.post(`v1/equipment/add`, {
+                        name : app.name,
+                        serial : app.serial,
+                        category : app.category,
+                        }).then(response => {
+                            if(response.data.status == 'success'){
+                                $('#addEquipment').modal('hide');
+                                this.refresTable()
+                            }
+                            else{
+                                app.error = true;
+                                app.errors = response.errors;
+                            }
+                        })
+            },
+            
+            refresTable : function(){
+
+                this.$http.get('v1/equipment/all').then(response => {
+                    this.equipments = response.data.data;
+                })  
+                
+            }, 
+            
+            
+            
+                
+                
         }
         
         

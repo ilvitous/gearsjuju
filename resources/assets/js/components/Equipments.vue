@@ -104,17 +104,37 @@
                         </div>
                         
                         
+                        <div class="form-group">
+                             <img width="100%" height="auto" class="img-responsive" :src="'/qrcodes/qrcode_'+id+'.svg'">
+                             
+                             <div id="printableArea">
+                                <div style="width:45mm; text-align: center; border: solid 1px #000">
+                                     <img width="100%" height="auto" class="img-responsive" :src="'/qrcodes/qrcode_'+id+'.svg'">
+                                     <h1 style="font-size: 8px; font-family: sans-serif">{{name}}</h1>
+                                </div>
+                            
+                             </div>
+                             
+                        </div>
+                        
+                        
                         
                       
                         
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         
                         <button  
-                            
+                            type="button"
                             class="btn btn-danger"
                             @click="deleteEquipment">
                             Delete
-                            
+                        </button>
+                        
+                        <button  
+                            type="button"
+                            class="btn btn-secondary"
+                            @click="printQr">
+                            Print
                         </button>
                         
                         <button type="submit" class="btn btn-primary">Save</button>
@@ -324,6 +344,15 @@
                             }
                         })
 
+            },
+            
+            printQr : function(event){
+                var w = window.open();
+                
+                w.document.write($('#printableArea').html());
+                w.print();
+                w.close();
+                
             }
           
                         
@@ -352,7 +381,18 @@
        padding-bottom: 5px;
    }
    
-
+   #printableArea{
+      display: none;
+    }
+   
+    
+    @media print {
+      #printableArea{
+          display: block;
+          
+      }
+    
+    }
    
   
        

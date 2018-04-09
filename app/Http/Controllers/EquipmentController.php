@@ -5,10 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Equipment;
 use App\Category;
+
+use QrCode;
+
+
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+
+
 use App\Http\Requests\AddNewEquipmentRequest;
 use App\Http\Requests\DeleteEquipmentRequest;
 use App\Http\Requests\EditEquipmentRequest;
-
 
 
 
@@ -27,6 +34,10 @@ class EquipmentController extends Controller
         $equipment->chekout = false;
         $equipment->chekout_date = null;
         $equipment->save();
+        QrCode::generate($equipment->id, '../public/qrcodes/qrcode_'.$equipment->id.'.svg');
+        
+        
+        
         
         return response([
             'status' => 'success',

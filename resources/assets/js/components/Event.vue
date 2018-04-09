@@ -19,7 +19,6 @@
                     <ul>
                         <li>Dates: <strong>{{event.days}}</strong></li>
                         <li>Address: <strong>{{event.address}}</strong></li>
-                        <li>Archived: <strong>{{event.archived}}</strong></li>
                     </ul>
                 </div>
                 

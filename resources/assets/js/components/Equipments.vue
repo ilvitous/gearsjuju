@@ -33,6 +33,7 @@
                         <div class="form-group">
                             <label for="exampleFormControlSelect1">Category</label>
                             <select class="form-control" v-model="category" required>
+                                <option disabled value="">Please select one</option>
                                 <option 
                                 v-for="category in categories" 
                                 :value="category.id" 
@@ -59,6 +60,80 @@
             </div>
         <!-- Modal add -->
         
+        
+        <!-- Modal edit -->
+            <div class="modal fade" id="editEquipment" tabindex="-1" role="dialog" aria-labelledby="editEquipment" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">{{name}}</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  
+                <div class="modal-body">
+                    
+                    <form autocomplete="off" @submit.prevent="editEquipmentSubmit" id="register" method="post">
+                       
+                        <div class="form-group" v-bind:class="{ 'has-error': error && errors.name }">
+                            <label for="title">Name</label>
+                            <input type="text" id="name" class="form-control" v-model="name" required>
+                            <span class="help-block" v-if="error && errors.name">{{ errors.title }}</span>
+                        </div>
+                        
+                       
+                        <div class="form-group" v-bind:class="{ 'has-error': error && errors.email }">
+                            <label for="serial">Serial</label>
+                            <input id="serial" type="text" class="form-control" v-model="serial">
+                            <span class="help-block" v-if="error && errors.email">{{ errors.address }}</span>
+                        </div>
+                        
+                        
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Category</label>
+                            <select class="form-control" v-model="selected" required>
+                                <option disabled value="">Please select one</option>
+                                <option 
+                                v-for="category in categories" 
+                                v-bind:value="category.id"
+                                >
+                                  {{category.name}}
+                                </option>
+                            </select>
+                        </div>
+                        
+                        
+                        
+                      
+                        
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        
+                        <button  
+                            
+                            class="btn btn-danger"
+                            @click="deleteEquipment">
+                            Delete
+                            
+                        </button>
+                        
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        
+                        
+                        
+                        
+                        
+                        </form>
+                
+                
+                </div>
+                
+                
+                
+                </div>
+              </div>
+            </div>
+        <!-- Modal edit -->
         
         <LeftNav></LeftNav>
         <div class="main_container">
@@ -93,12 +168,19 @@
                     <tbody>
                         
                      
-                      <tr v-for="equipment in equipmentcat.equipments" v-on:click="clickList(equipment)">
+                      <tr v-for="equipment in equipmentcat.equipments">
                         <td class="align-middle">{{ equipment.id }}</td>
                         <td class="align-middle">{{ equipment.name }}</td>
                         <td class="align-middle">{{ equipment.serial }}</td>
                         <td class="align-middle">{{ equipment.chekout }}</td>
-                        <td class="align-middle"></td>
+                        <td class="align-middle">
+                            <button  
+                            v-on:click="editEquipment(equipment)"
+                            data-toggle="modal" data-target="#editEquipment"
+                            class="btn btn-secondary float-right">
+                            Open
+                            </button>
+                        </td>
                       </tr>
                      
                       
@@ -140,11 +222,13 @@
             return {
                 name: '',
                 serial: '',
+                id: '',
                 error: false,
                 errors: {},
                 categories: '',
                 category: '',
                 equipments: '',
+                selected: '',
                 
             };
         },
@@ -182,6 +266,30 @@
                         })
             },
             
+            
+            editEquipmentSubmit : function(event){
+                 var id = this.id
+                 var app = this
+                 this.$http.post(`v1/equipment/edit`, {
+                        id : id,
+                        name : app.name,
+                        serial : app.serial,
+                        category : app.selected,
+                        }).then(response => {
+                            if(response.data.status == 'success'){
+                                $('#editEquipment').modal('hide');
+                                this.refresTable()
+                            }
+                            else{
+                                app.error = true;
+                                app.errors = response.errors;
+                            }
+                        })
+                
+            },
+            
+            
+            
             refresTable : function(){
 
                 this.$http.get('v1/equipment/all').then(response => {
@@ -190,9 +298,34 @@
                 
             }, 
             
-            clickList: function (equipment) {
-                // this.$router.push({ name: 'event', params: { id: event.id }})
+            
+            editEquipment : function(equipment){
+                this.$http.get('v1/categories/all').then(response => {
+                this.categories = response.data.data;
+                })
+                this.name = equipment.name
+                this.id = equipment.id
+                this.serial = equipment.serial
+                this.selected = equipment.category_id
+                
+                
+                
+
+            }, 
+            
+            deleteEquipment : function(event){
+                    
+                    this.$http.post(`v1/equipment/delete`, {
+                            id : this.id,
+                        }).then(response => {
+                            if(response.data.status == 'success'){
+                                this.refresTable()
+                                $('#editEquipment').modal('hide');
+                            }
+                        })
+
             }
+          
                         
             
             
@@ -219,18 +352,7 @@
        padding-bottom: 5px;
    }
    
-   tbody{
-       
-       tr{
-       cursor: pointer;
-       @include transition (background 0.3s ease);
-           &:hover{
-               background: $gray20;
-           }
-       
-       }
-   }
-   
+
    
   
        

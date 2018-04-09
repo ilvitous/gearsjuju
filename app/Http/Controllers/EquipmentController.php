@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Equipment;
 use App\Category;
 use App\Http\Requests\AddNewEquipmentRequest;
+use App\Http\Requests\DeleteEquipmentRequest;
+use App\Http\Requests\EditEquipmentRequest;
+
 
 
 
@@ -55,7 +58,8 @@ class EquipmentController extends Controller
                         'name' => $equipment->name,
                         'serial' => $equipment->serial,
                         'chekout' => $equipment->chekout,
-                        'category_name' => $category->name
+                        'category_name' => $category->name,
+                        'category_id' => $category->id
                     );
                     array_push($category_array['equipments'], $equipment);
                 }
@@ -66,15 +70,38 @@ class EquipmentController extends Controller
             
         }
         
-        
-       
-
-        
-        
-         return response([
+        return response([
             'status' => 'success',
             'data' => $equipments_array
            ], 200);
+    }
+    
+    
+    public function delete_equipment(DeleteEquipmentRequest $request){
+       
+        $equipment = Equipment::find($request->id);
+        $equipment->forceDelete();
+        return response([
+            'status' => 'success',
+           ], 200);
+
+    }
+    
+    public function edit_equipment(EditEquipmentRequest $request){
+        
+        $equipment = Equipment::find($request->id);
+        $category = Category::find($request->category);
+        $equipment->name = $request->name;
+        $equipment->serial = $request->serial;
+        $equipment->category()->associate($category);
+        $equipment->save();
+        
+        return response([
+            'status' => 'success',
+            'data' => $equipment 
+           ], 200);
+        
+        
     }
    
 }

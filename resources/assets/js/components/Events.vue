@@ -406,25 +406,3 @@
     
 </script>
 
-
-<style lang="scss" scoped>
-   @import '~@/_variables.scss';
-   
-   
-   
-   tbody{
-       
-       tr{
-       cursor: pointer;
-       @include transition (background 0.3s ease);
-           &:hover{
-               background: $gray30;
-           }
-       
-       }
-   }
-   
-   
-  
-       
-</style>

@@ -69,7 +69,14 @@ Route::group(['middleware' => 'jwt.auth'], function(){
 // equipment
 Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('v1/equipment/add', 'EquipmentController@add_new_equipment');
+  Route::post('v1/equipment/delete', 'EquipmentController@delete_equipment');
+  Route::post('v1/equipment/edit', 'EquipmentController@edit_equipment');
+  
+  
+  
   Route::get('v1/equipment/all', 'EquipmentController@get_all_equipments');
+  
+  
 });
 // equipment
 

@@ -16,7 +16,7 @@
         
     
     
-        <table class="table" v-if="users">
+        <table class="table table-striped" v-if="users">
             <thead>
               <tr>
                 <th>Username</th>
@@ -35,7 +35,7 @@
                     @click="edit_user"
                     :data-id="user.id" 
                     data-toggle="modal" data-target="#editModal"
-                    class="btn float-right">
+                    class="btn btn-secondary float-right">
                         Edit
                     </button>
                     </td>

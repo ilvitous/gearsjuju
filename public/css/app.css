@@ -267,5 +267,18 @@ a:focus {
 thead {
   font-weight: 700;
   text-transform: uppercase;
+  background: #bcbec0;
+}
+
+.btn-primary {
+  background: #1aa0db;
+  border: #1aa0db;
+  -webkit-transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #1aa0db;
+  opacity: 0.7;
 }
 

@@ -14,7 +14,7 @@
                   
                 <div class="modal-body">
                     
-                        <form autocomplete="off" @submit.prevent="newCategory" id="register" method="post">
+                    <form autocomplete="off" @submit.prevent="newCategory" id="register" method="post">
                        
                        <div class="form-group" v-bind:class="{ 'has-error': error && errors.name }">
                             <label for="title">Name</label>
@@ -26,8 +26,7 @@
                         <button type="submit" class="btn btn-primary">Add New Category</button>
                         </form>
                         
-                        
-                        
+
                 
                 
                 </div>
@@ -35,6 +34,59 @@
               </div>
             </div>
         <!-- Modal add -->
+        
+        
+           <!-- Modal edit -->
+            <div class="modal fade" id="editCategory" tabindex="-1" role="dialog" aria-labelledby="editCategory" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Edit Category {{name}}</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+
+
+                <div class="modal-body">
+                    
+                    <form autocomplete="off" @submit.prevent="editCategorySubmit" id="edit" method="post">
+                       <div class="form-group" v-bind:class="{ 'has-error': error && errors.name }">
+                            <label for="title">Name</label>
+                            <input type="text" id="name" class="form-control" v-model="name" required>
+                            <span class="help-block" v-if="error && errors.name">{{ errors.title }}</span>
+                        </div>
+                       
+                       
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                       
+                        <button  
+                            type="button"
+                            class="btn btn-danger"
+                            @click="deleteCategory">
+                            Delete
+                        </button>
+                        
+                     
+                        
+                        <button type="submit" class="btn btn-primary">Save</button>
+                       
+                       
+                        </form>
+                        
+                        
+                        
+                        
+
+                
+                
+                </div>
+                </div>
+              </div>
+            </div>
+        <!-- Modal edit -->
+        
+        
         
         <LeftNav></LeftNav>
         
@@ -53,7 +105,7 @@
             </div>
             
             
-            <table class="table" v-if="categories">
+            <table class="table table-striped" v-if="categories">
                 <thead>
                   <tr>
                     <th>Name</th>
@@ -64,12 +116,17 @@
                 <tbody>
                   <tr v-for="category in categories">
                     <td class="align-middle">{{ category.name }}</td>
-                    <td class="align-middle">25</td>
+                    <td class="align-middle">{{category.category_count}}</td>
                     <td class="align-middle">
                         
                         <button  
-                        data-toggle="modal" data-target="#editEvent"
-                        class="btn btn-secondary float-right">
+                        data-toggle="modal" data-target="#editCategory"
+                        :data-id="category.id"
+                        :data-name="category.name"
+                        @click="editCategory"
+                        class="btn btn-secondary float-right"
+                        
+                        >
                         Edit
                         </button>
                         
@@ -101,6 +158,7 @@
                 error: false,
                 errors: {},
                 categories: null,
+                category_id : '',
             };
         },
         
@@ -136,7 +194,45 @@
            },
            
            
+           editCategory : function(event){
+                this.category_id =  event.target.dataset.id
+                this.name = event.target.dataset.name
+           },
            
+           editCategorySubmit : function(event){
+            var app = this
+            this.$http.post(`v1/categories/edit`, {
+                            name : app.name,
+                            id : this.category_id
+                            
+                        }).then(response => {
+                            if(response.data.status == 'success'){
+                                this.refresTable()
+                                $('#editCategory').modal('hide');
+                               
+                            }
+                            else{
+                                app.error = true;
+                                app.errors = response.errors;
+                            }
+                        })
+               
+               
+           },
+           
+           
+           deleteCategory : function(event){
+            this.$http.post(`v1/categories/delete`, {
+                            name : this.name,
+                            id : this.category_id
+                        }).then(response => {
+                            if(response.data.status == 'success'){
+                                this.refresTable()
+                                $('#editCategory').modal('hide');
+                            }
+                        })
+               
+           }
            
            
         }

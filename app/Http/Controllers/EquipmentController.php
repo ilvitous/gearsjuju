@@ -34,22 +34,42 @@ class EquipmentController extends Controller
     
     
     public function get_all_equipments(){
-        $equipments = Equipment::orderBy('created_at', 'desc')->get();
         
         $equipments_array = array();
+        $categories = Category::orderBy('name', 'asc')->get();
         
-        foreach($equipments as $equipment){
-            $category = Category::find($equipment->category_id);
+        foreach($categories as $category){
+           
+            $equipments = Equipment::orderBy('created_at', 'desc')->where('category_id', $category->id)->get();
             
-            $equipment_to_add = array(
-              'name' => $equipment->name,
-              'serial' => $equipment->serial,
-              'category' => $category->name,
-            );
-            
-            array_push($equipments_array, $equipment_to_add);
+            if(count($equipments)>0){
+                
+                $category_array = array(
+                'category' => $category->name,
+                'equipments' => array()
+                );
+                
+                foreach($equipments as $equipment){
+                    $equipment = array(
+                        'id' => $equipment->id,           
+                        'name' => $equipment->name,
+                        'serial' => $equipment->serial,
+                        'chekout' => $equipment->chekout,
+                        'category_name' => $category->name
+                    );
+                    array_push($category_array['equipments'], $equipment);
+                }
+                
+                array_push($equipments_array, $category_array);
+                
+            }
             
         }
+        
+        
+       
+
+        
         
          return response([
             'status' => 'success',

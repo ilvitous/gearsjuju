@@ -75,25 +75,50 @@
                 </div>
             </div>
             
+            <div class="row" v-if="equipments" v-for="equipmentcat in equipments">
+                
+                <div class="col-12">
+                    
+                    <h2>{{equipmentcat.category}}</h2>
+                    <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th width="5%">ID</th>
+                        <th width="45%">Name</th>
+                        <th width="15%">Serial</th>
+                        <th width="35%">Checked Out</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        
+                     
+                      <tr v-for="equipment in equipmentcat.equipments" v-on:click="clickList(equipment)">
+                        <td class="align-middle">{{ equipment.id }}</td>
+                        <td class="align-middle">{{ equipment.name }}</td>
+                        <td class="align-middle">{{ equipment.serial }}</td>
+                        <td class="align-middle">{{ equipment.chekout }}</td>
+                        <td class="align-middle"></td>
+                      </tr>
+                     
+                      
+                      
+                    </tbody>
+                    </table>
+                    
+                </div>
+                
+                    
+                
+            </div>
             
-            <table class="table" v-if="equipments">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Serial</th>
-                    <th>Category</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="equipment in equipments">
-                    <td class="align-middle">{{ equipment.name }}</td>
-                     <td class="align-middle">{{ equipment.serial }}</td>
-                    <td class="align-middle">{{ equipment.category }}</td>
-                    <td class="align-middle"></td>
-                  </tr>
-                </tbody>
-            </table>
+            
+            
+            
+            
+            
+            
+            
             
             
         </div>
@@ -165,6 +190,10 @@
                 
             }, 
             
+            clickList: function (equipment) {
+                // this.$router.push({ name: 'event', params: { id: event.id }})
+            }
+                        
             
             
                 
@@ -180,3 +209,29 @@
     
     
 </script>
+
+<style lang="scss" scoped>
+   @import '~@/_variables.scss';
+   
+   h2{
+       margin-top: 60px;
+       border-bottom: solid 1px $blue;
+       padding-bottom: 5px;
+   }
+   
+   tbody{
+       
+       tr{
+       cursor: pointer;
+       @include transition (background 0.3s ease);
+           &:hover{
+               background: $gray20;
+           }
+       
+       }
+   }
+   
+   
+  
+       
+</style>

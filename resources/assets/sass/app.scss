@@ -177,4 +177,16 @@ a:hover, a:active, a:focus {
 thead{
        font-weight: 700;
        text-transform: uppercase;
-   }
+       background: $gray30;
+       
+}
+
+.btn-primary{
+  background: $blue;
+  border: $blue;
+  @include transition (opacity 0.3s ease);
+  &:hover{
+    background: $blue;
+    opacity: 0.7;
+  }
+}

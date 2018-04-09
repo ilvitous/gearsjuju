@@ -59,6 +59,8 @@ Route::group(['middleware' => 'jwt.auth'], function(){
 // categories
 Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('v1/categories/add', 'CategoryController@add_new_category');
+  Route::post('v1/categories/edit', 'CategoryController@edit_category');
+  Route::post('v1/categories/delete', 'CategoryController@delete_category');
   Route::get('v1/categories/all', 'CategoryController@get_all_categories');
 });
 // categories

@@ -170,7 +170,20 @@
                 </div>
             </div>
             
+            <div class="row">
+                <div class="col-12">
+                     <button 
+                        type="button" 
+                        class="btn btn-primary"
+                        @click = "filterChecked"
+                        >Filter by Checked Out
+                    </button>
+                </div>
+            </div>
+            
             <div class="row" v-if="equipments" v-for="equipmentcat in equipments">
+                
+                
                 
                 <div class="col-12">
                     
@@ -195,7 +208,12 @@
                         <td class="align-middle">{{ equipment.serial }}</td>
                         <td class="align-middle text-center">
                         <span v-if="equipment.chekout > 0"><i class="fas fa-circle"></i></span></td>
-                        <td class="align-middle"><router-link :to="{ name: 'event', params: { id: equipment.gearevent_id }}">{{ equipment.gearevent_title }}</router-link></td>
+                        <td class="align-middle">
+                        
+                        <router-link :to="{ name: 'event', params: { id: equipment.gearevent_id }}" v-if="equipment.chekout > 0">{{ equipment.gearevent_title }}</router-link>
+                            
+                        </td>
+                        
                         <td class="align-middle">
                             <button  
                             v-on:click="editEquipment(equipment)"
@@ -252,6 +270,9 @@
                 category: '',
                 equipments: '',
                 selected: '',
+                filtered_equipments: '',
+                no_filtered_equipments: '',
+                filtered: false,
                 
             };
         },
@@ -316,7 +337,9 @@
             refresTable : function(){
 
                 this.$http.get('v1/equipment/all').then(response => {
-                    this.equipments = response.data.data;
+                    this.no_filtered_equipments = response.data.data;
+                    this.equipments = this.no_filtered_equipments;
+
                 })  
                 
             }, 
@@ -356,13 +379,38 @@
                 w.print();
                 w.close();
                 
+            },
+            
+            filterChecked : function (){
+                
+                if(this.filtered == false){
+                    this.filtered = true
+                    
+                    this.filtered_equipments = this.no_filtered_equipments;
+                   
+                    this.filtered_equipments.forEach(function(element) {
+                        var equipments = element.equipments;
+                        var newArray = equipments.filter(function (el) {
+                        return el.chekout > 0;
+                        });
+                        element.equipments = newArray;
+                    });
+                    
+
+                }else{
+                    this.filtered = false
+                    this.refresTable()
+                }
+                
+                
+                
+                                                
             }
           
                         
             
             
-                
-                
+
         }
         
         

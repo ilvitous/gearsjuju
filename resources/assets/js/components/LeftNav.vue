@@ -16,7 +16,6 @@
             <li>
                 <router-link :to="{ name: 'equipments' }">Equipments</router-link>
                     <ul>
-                        <li>Checked Out</li>
                         <li><router-link :to="{ name: 'equipment-categories' }">Categories</router-link></li>
                     </ul>
                 </li>

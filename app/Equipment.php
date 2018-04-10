@@ -14,11 +14,18 @@ class Equipment extends Model
     }
     
     
+    public function gearevent()
+    {
+        return $this->belongsTo('App\Gearevent');
+    }
+    
+    
+    
+    
+    
     public function get_category_quanity($category_id){
-        
         $counts = Equipment::where('category_id', $category_id)->get();
         return count($counts);
-            
     }
     
     

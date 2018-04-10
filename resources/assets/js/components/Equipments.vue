@@ -179,10 +179,11 @@
                     <thead>
                       <tr>
                         <th width="5%">ID</th>
-                        <th width="45%">Name</th>
-                        <th width="15%">Serial</th>
-                        <th width="35%">Checked Out</th>
-                        <th></th>
+                        <th width="30%">Name</th>
+                        <th width="10%">Serial</th>
+                        <th class="text-center" width="25%">Checked Out</th>
+                        <th width="30%">Event</th>
+                        <th width="10%"></th>
                       </tr>
                     </thead>
                     <tbody>
@@ -192,7 +193,9 @@
                         <td class="align-middle">{{ equipment.id }}</td>
                         <td class="align-middle">{{ equipment.name }}</td>
                         <td class="align-middle">{{ equipment.serial }}</td>
-                        <td class="align-middle">{{ equipment.chekout }}</td>
+                        <td class="align-middle text-center">
+                        <span v-if="equipment.chekout > 0"><i class="fas fa-circle"></i></span></td>
+                        <td class="align-middle"><router-link :to="{ name: 'event', params: { id: equipment.gearevent_id }}">{{ equipment.gearevent_title }}</router-link></td>
                         <td class="align-middle">
                             <button  
                             v-on:click="editEquipment(equipment)"
@@ -385,6 +388,11 @@
       display: none;
     }
    
+   table{
+       span{
+           color: #ff0000;
+       }
+   }
     
     @media print {
       #printableArea{

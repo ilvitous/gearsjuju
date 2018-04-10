@@ -5,8 +5,10 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Equipment;
 use App\Category;
+use App\Gearevent;
 
 use QrCode;
+use Carbon;
 
 
 use Illuminate\Support\Facades\Storage;
@@ -16,6 +18,9 @@ use Illuminate\Support\Facades\File;
 use App\Http\Requests\AddNewEquipmentRequest;
 use App\Http\Requests\DeleteEquipmentRequest;
 use App\Http\Requests\EditEquipmentRequest;
+use App\Http\Requests\CheckInEquipmentRequest;
+use App\Http\Requests\CheckOutEquipmentRequest;
+
 
 
 
@@ -64,13 +69,20 @@ class EquipmentController extends Controller
                 );
                 
                 foreach($equipments as $equipment){
+                    $event = null;
+                    if($equipment->gearevent_id){
+                        $event = Gearevent::find($equipment->gearevent_id);
+                    }
+                    
                     $equipment = array(
                         'id' => $equipment->id,           
                         'name' => $equipment->name,
                         'serial' => $equipment->serial,
                         'chekout' => $equipment->chekout,
                         'category_name' => $category->name,
-                        'category_id' => $category->id
+                        'category_id' => $category->id,
+                        'gearevent_id' => ($event ? $event->id : ''),
+                        'gearevent_title' => ($event ? $event->title : ''),
                     );
                     array_push($category_array['equipments'], $equipment);
                 }
@@ -105,6 +117,47 @@ class EquipmentController extends Controller
         $equipment->name = $request->name;
         $equipment->serial = $request->serial;
         $equipment->category()->associate($category);
+        $equipment->save();
+        
+        return response([
+            'status' => 'success',
+            'data' => $equipment 
+           ], 200);
+        
+        
+    }
+    
+    
+    public function check_in_equipment(CheckInEquipmentRequest $request){
+        
+        date_default_timezone_set('America/Phoenix');
+        
+        $equipment = Equipment::find($request->id);
+        $event = Gearevent::find($request->event);
+        $equipment->gearevent()->associate($event);
+        $equipment->chekout = true;
+        $equipment->chekout_date = Carbon\Carbon::now();
+        $equipment->assigned_to = $request->assigned_to;
+        
+        $equipment->save();
+        
+        return response([
+            'status' => 'success',
+            'data' => $equipment 
+           ], 200);
+        
+        
+    }
+    
+    
+    public function check_out_equipment(CheckOutEquipmentRequest $request){
+        
+        $equipment = Equipment::find($request->id);
+        $equipment->gearevent_id = NULL;
+        $equipment->chekout = false;
+        $equipment->chekout_date = NULL;
+        $equipment->assigned_to = NULL;
+        
         $equipment->save();
         
         return response([

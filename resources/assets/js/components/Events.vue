@@ -159,19 +159,19 @@
                     <th>Title</th>
                     <th>Dates</th>
                     <th>Address</th>
+                    <th class="text-center">Assigned Equipments</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="event in events">
-                    <td class="align-middle">
-                        
-                    {{ event.title }}
-                    </td>
+                    <td class="align-middle">{{ event.title }}</td>
                     <td class="align-middle">{{ event.days }}</td>
                     <td class="align-middle">{{ event.address }}</td>
+                    <td class="align-middle text-center">
+                    <span v-if="event.equipments"><i class="fas fa-circle"></i></span></td>
                     <td class="align-middle">
-                        
+
                         <router-link :to="{ name: 'event', params: { id: event.id }}"><button class="btn btn-secondary float-right" style="margin-left: 15px;">Open</button></router-link>
                         
                         <button  
@@ -271,7 +271,7 @@
                         
                         
                         
-                        var event_edited = {title:arrayOfEvents[i].title, address:arrayOfEvents[i].address, days:days, dates:arrayOfEvents[i].dates,  id:arrayOfEvents[i].id};
+                        var event_edited = {title:arrayOfEvents[i].title, address:arrayOfEvents[i].address, days:days, dates:arrayOfEvents[i].dates,  id:arrayOfEvents[i].id , equipments : arrayOfEvents[i].equipments };
                         
                         array_filtered.push(event_edited);
                         
@@ -406,3 +406,18 @@
     
 </script>
 
+
+
+<style lang="scss" scoped>
+   
+   
+   table{
+       span{
+           color: #ff0000;
+       }
+   }
+    
+  
+  
+       
+</style>

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddGeareventToEquipment extends Migration
+class CreateEquipmentGroup extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,11 @@ class AddGeareventToEquipment extends Migration
      */
     public function up()
     {
-         Schema::table('equipment', function($table) {
-         $table->integer('gearevent_id')->unsigned()->nullable()->default(null);
-         });
+        Schema::create('equipment_group', function (Blueprint $table) {
+            $table->increments('id');
+            $table->integer('group_id')->unsigned();
+            $table->integer('equipment_id')->unsigned();
+        });
     }
 
     /**
@@ -25,9 +27,6 @@ class AddGeareventToEquipment extends Migration
      */
     public function down()
     {
-        Schema::table('equipment', function($table) {
-        $table->dropColumn('gearevent_id');
-        });
+        Schema::dropIfExists('equipment_group');
     }
 }
-

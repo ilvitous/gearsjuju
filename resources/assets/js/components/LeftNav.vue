@@ -2,8 +2,12 @@
    
     <div class="main_nav_container">
         <img class="img-responsive" src="/assets/img/gearsjuju.svg">
-        
         <ul>
+            <li>
+                <router-link :to="{ name: 'request' }">Request</router-link>
+            </li>
+            
+            
             <li>
                 <router-link :to="{ name: 'events' }">Events</router-link>
                 <ul>
@@ -31,9 +35,7 @@
             </li>
             <li><a href="#" @click.prevent="$auth.logout()">Logout</a></li>
         </ul>
-    
     </div>
-    
 </template>
 
 

@@ -62,6 +62,15 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('v1/categories/edit', 'CategoryController@edit_category');
   Route::post('v1/categories/delete', 'CategoryController@delete_category');
   Route::get('v1/categories/all', 'CategoryController@get_all_categories');
+  
+  
+  // group
+  Route::post('v1/categories/group/add', 'GroupController@add_new_group');
+  Route::post('v1/categories/group/delete', 'GroupController@delete_group');
+  Route::post('v1/categories/group/all', 'GroupController@get_all_groups');
+  
+  
+  
 });
 // categories
 
@@ -74,6 +83,18 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('v1/equipment/checkin', 'EquipmentController@check_in_equipment');
   Route::post('v1/equipment/checkout', 'EquipmentController@check_out_equipment');
   Route::get('v1/equipment/all', 'EquipmentController@get_all_equipments');
+  Route::get('v1/equipment/request/all', 'EquipmentController@get_all_equipments_for_request');
+  
+  // assign_equipment
+  Route::post('v1/equipment/assign', 'EquipmentController@assign_equipment');
+  Route::post('v1/equipment/unassign', 'EquipmentController@unassign_equipment');
+  
+  
+  // requests
+  Route::post('v1/request/add', 'GearRequestController@add_new_request');
+  Route::post('v1/request/delete', 'GearRequestController@delete_request');
+  Route::get('v1/request/all', 'GearRequestController@get_all_requests');
+
   
   
 });

@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddNewEquipmentRequest extends FormRequest
+class AssignEquipmentRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
-     public function authorize()
+    public function authorize()
     {
         return true;
     }
@@ -24,13 +24,11 @@ class AddNewEquipmentRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required',
-            'serial' => 'nullable',
-            'category' => 'required',
-            'group' => 'nullable',
+            'event' => 'required',
+            'equipment_id' => 'required',
+            'user' => 'required',
+            'equipment_request' => 'required',
+            'gear_request' => 'required',
         ];
     }
-    
-   
 }
-

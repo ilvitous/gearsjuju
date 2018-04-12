@@ -33,6 +33,19 @@ class User extends Authenticatable
     return $this->belongsToMany(Role::class);
     }
     
+    
+    public function requests()
+    {
+        return $this->hasMany('App\Request');
+    }
+    
+    
+    public function equipments()
+    {
+        return $this->hasMany('App\Equipment');
+    }
+    
+    
     /**
 
     * @param string|array $roles

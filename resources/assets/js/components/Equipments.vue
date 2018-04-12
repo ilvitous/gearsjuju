@@ -42,6 +42,22 @@
                                 </option>
                             </select>
                         </div>
+                        
+                       
+                        <div class="form-group" v-if="groups.length > 0">
+                            
+                            <div class="form-check form-check-inline"  v-for="(group, index) in groups">
+                              <input class="form-check-input" type="checkbox" v-bind:id="group.id" :value="group.id" v-model="group_assigned">
+                              <label class="form-check-label" v-bind:for="group.id">{{group.name}}</label>
+                            </div>
+                            
+                        </div>
+                                                
+                        
+                        
+                        
+                        
+                        
                       
                         
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -160,6 +176,7 @@
             <div class="row">
                 <div class="col-6"><h1>Equipments</h1></div>
                 <div class="col-6">
+                    
                     <button 
                     type="button" 
                     class="btn btn-primary float-right"
@@ -167,6 +184,7 @@
                     @click = "addEquipment"
                     >Add New Equipment
                     </button>
+
                 </div>
             </div>
             
@@ -192,7 +210,7 @@
                     <thead>
                       <tr>
                         <th width="5%">ID</th>
-                        <th width="30%">Name</th>
+                        <th width="20%">Name</th>
                         <th width="10%">Serial</th>
                         <th class="text-center" width="25%">Checked Out</th>
                         <th width="30%">Event</th>
@@ -204,10 +222,24 @@
                      
                       <tr v-for="equipment in equipmentcat.equipments">
                         <td class="align-middle">{{ equipment.id }}</td>
-                        <td class="align-middle">{{ equipment.name }}</td>
+                        <td class="align-middle">
+                            {{ equipment.name }}
+                            <span class="groups" v-if="equipment.group">
+                                <span v-for="group in equipment.group">
+                                     {{ group.name }}
+                                </span>    
+                            </span>
+                        </td>
+                        
+                       
+                            
+                       
+                        
+                       
+                        
                         <td class="align-middle">{{ equipment.serial }}</td>
                         <td class="align-middle text-center">
-                        <span v-if="equipment.chekout > 0"><i class="fas fa-circle"></i></span></td>
+                        <span class="checkout" v-if="equipment.chekout > 0"><i class="fas fa-circle"></i></span></td>
                         <td class="align-middle">
                         
                         <router-link :to="{ name: 'event', params: { id: equipment.gearevent_id }}" v-if="equipment.chekout > 0">{{ equipment.gearevent_title }}</router-link>
@@ -273,19 +305,46 @@
                 filtered_equipments: '',
                 no_filtered_equipments: '',
                 filtered: false,
+                groups : '',
+                group : '',
+                
+                group_assigned : []
                 
             };
         },
         
         mounted() {
-            
             this.refresTable()
+        },
+        
+        watch: {
+            category: function(){
+                
+                this.$http.post(`v1/categories/group/all`, {
+                        id : this.category,
+                        }).then(response => {
+                            if(response.data.status == 'success'){
+                               this.groups = response.data.data;
+                            }
+                        })
+                
+                
+                
+            },
+            
+          
         },
         
         
         methods : {
             
             addEquipment(){
+                
+                this.name = ''
+                this.serial = ''
+                this.id = ''
+                this.category = ''
+                this.groups = ''
                 this.$http.get('v1/categories/all').then(response => {
                 this.categories = response.data.data;
                 })
@@ -298,6 +357,8 @@
                         name : app.name,
                         serial : app.serial,
                         category : app.category,
+                        group : app.group_assigned,
+                        
                         }).then(response => {
                             if(response.data.status == 'success'){
                                 $('#addEquipment').modal('hide');
@@ -437,8 +498,14 @@
     }
    
    table{
-       span{
+       span.checkout{
            color: #ff0000;
+       }
+       
+       span.groups{
+           display: block;
+           font-size: 0.8em;
+           margin-top: 5px;
        }
    }
     

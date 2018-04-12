@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddNewEquipmentRequest extends FormRequest
+class AddNewGroupRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,12 +25,7 @@ class AddNewEquipmentRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'serial' => 'nullable',
             'category' => 'required',
-            'group' => 'nullable',
         ];
     }
-    
-   
 }
-

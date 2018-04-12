@@ -14,6 +14,9 @@ import Event from './components/Event.vue';
 import EventsArchived from './components/EventsArchived.vue';
 import Equipments from './components/Equipments.vue';
 import EquipmentCategories from './components/EquipmentCategories.vue';
+import Request from './components/Request.vue';
+import moment from 'moment'
+
 
 
 import mDatePicker from 'vue-multi-date-picker'
@@ -22,7 +25,11 @@ Vue.use(mDatePicker)
 Vue.use(VueRouter);
 Vue.use(VueAxios, axios);
 
-
+Vue.filter('formatDate', function(value) {
+  if (value) {
+    return moment(String(value)).format('MM/DD/YYYY hh:mm')
+  }
+})
 
 
 axios.defaults.baseURL = window.location.origin + '/api';
@@ -90,6 +97,13 @@ const router = new VueRouter({
          meta: {
             auth: true,
         }
+    },{
+        path: '/request', 
+        component: Request,
+        name: 'request',
+         meta: {
+            auth: true,
+        }
     }
     ]
   
@@ -114,6 +128,8 @@ Vue.use(require('@websanova/vue-auth'),authOptions)
 
 
 
-
 App.router = Vue.router
 new Vue(App).$mount('#app');
+
+
+

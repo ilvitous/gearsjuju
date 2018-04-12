@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AddNewEquipmentRequest extends FormRequest
+class EditGroupRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,13 +24,8 @@ class AddNewEquipmentRequest extends FormRequest
     public function rules()
     {
         return [
+            'id' => 'required',
             'name' => 'required',
-            'serial' => 'nullable',
-            'category' => 'required',
-            'group' => 'nullable',
         ];
     }
-    
-   
 }
-

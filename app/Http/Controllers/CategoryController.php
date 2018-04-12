@@ -32,6 +32,9 @@ class CategoryController extends Controller
             
             $equipment = new Equipment;
             $category->category_count = $equipment->get_category_quanity($category->id);
+            
+            $category->groups = $category->get_category_group($category->id);
+            
         }
         
          return response([

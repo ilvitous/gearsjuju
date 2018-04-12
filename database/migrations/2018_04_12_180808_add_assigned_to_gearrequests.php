@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddGeareventToEquipment extends Migration
+class AddAssignedToGearrequests extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddGeareventToEquipment extends Migration
      */
     public function up()
     {
-         Schema::table('equipment', function($table) {
-         $table->integer('gearevent_id')->unsigned()->nullable()->default(null);
+         Schema::table('gearrequests', function($table) {
+         $table->text('assigned')->nullable()->default(null);
          });
     }
 
@@ -25,9 +25,8 @@ class AddGeareventToEquipment extends Migration
      */
     public function down()
     {
-        Schema::table('equipment', function($table) {
-        $table->dropColumn('gearevent_id');
+        Schema::table('gearrequests', function($table) {
+        $table->dropColumn('assigned');
         });
     }
 }
-

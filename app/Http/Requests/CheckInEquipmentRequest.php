@@ -24,8 +24,8 @@ class CheckInEquipmentRequest extends FormRequest
     public function rules()
     {
         return [
+            'event_id' => 'required',
             'id' => 'required',
-            'event' => 'required',
             'assigned_to' => 'required',
             
         ];

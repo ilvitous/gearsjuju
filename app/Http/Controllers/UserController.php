@@ -11,7 +11,7 @@ use App\Http\Requests\SetRoleRequest;
 use App\Http\Requests\GetUserRequest;
 use App\Http\Requests\EditUserRequest;
 use JWTAuth;
-
+use Auth;
 use Illuminate\Http\Request;
 class UserController extends Controller
 {
@@ -112,9 +112,9 @@ class UserController extends Controller
            ], 200);
     }
     
-     public function get_user(GetUserRequest $request){
+     public function get_user(){
         
-        $user = User::find($request->id);
+        $user = User::find(Auth::user()->id);
         $role = $user->roles()->first();
         
         $user_to_add = array(

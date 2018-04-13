@@ -88,6 +88,11 @@ class EquipmentController extends Controller
                         $event = Gearevent::find($equipment->gearevent_id);
                     }
                     
+                    $user = null;
+                    if($equipment->user_id){
+                        $user = User::find($equipment->user_id);
+                    }
+                    
                     $group = null;
                     if($equipment->groups){
                         $group = $equipment->groups;
@@ -103,7 +108,9 @@ class EquipmentController extends Controller
                         'category_id' => $category->id,
                         'gearevent_id' => ($event ? $event->id : ''),
                         'gearevent_title' => ($event ? $event->title : ''),
-                        'group' => $group
+                        'group' => $group,
+                        'user' => ($user ? $user->name : ''),
+                        'consigned' => $equipment->assigned_to
                     );
                     array_push($category_array['equipments'], $equipment);
                 }
@@ -149,25 +156,68 @@ class EquipmentController extends Controller
     }
     
     
-    public function check_in_equipment(CheckInEquipmentRequest $request){
+    public function consign_equipment(CheckInEquipmentRequest $request){
         
         date_default_timezone_set('America/Phoenix');
         
+        // check if event is correct
         $equipment = Equipment::find($request->id);
-        $event = Gearevent::find($request->event);
-        $equipment->gearevent()->associate($event);
-        $equipment->chekout = true;
-        $equipment->chekout_date = Carbon\Carbon::now();
-        $equipment->assigned_to = $request->assigned_to;
+        $checkEvent = $equipment->gearevent_id;
         
+        if($checkEvent == $request->event_id){
+            
+            // check if already assigend
+            $assignedCheck = $equipment->assigned_to;
+            
+            if($assignedCheck){
+                return response([
+                'status' => 'fail',
+                'message' => 'Equipment was already consigned to '. $assignedCheck, 
+                'data' => $equipment 
+               ], 200);
+
+                   
+            }else{
+                $equipment->chekout = true;
+                $equipment->chekout_date = Carbon\Carbon::now();
+                $equipment->assigned_to = $request->assigned_to;
+                $equipment->save();
+                return response([
+                    'status' => 'success',
+                    'data' => $equipment 
+                   ], 200);
+            }
+            
+            
+            
+            
+        }else{
+            
+            return response([
+                'status' => 'fail',
+                'message' => 'Equipment is not assigned to this event', 
+                'data' => $equipment 
+               ], 200);
+            
+            
+        }
+
+        
+        
+        
+    }
+    
+    public function retire_equipment(CheckOutEquipmentRequest $request){
+        
+        $equipment = Equipment::find($request->id);
+        $equipment->chekout = false;
+        $equipment->chekout_date = NULL;
+        $equipment->assigned_to = NULL;
         $equipment->save();
-        
         return response([
             'status' => 'success',
             'data' => $equipment 
            ], 200);
-        
-        
     }
     
     
@@ -179,77 +229,104 @@ class EquipmentController extends Controller
         // 'equipment_request' => 'required',
         // 'gear_request' => 'required',
         
-        date_default_timezone_set('America/Phoenix');
         
-        $equipment = Equipment::find($request->equipment_id);
-        $event = Gearevent::find($request->event);
+        // chech if already assigned
         
-        // add event to equipment
-        $equipment->gearevent()->associate($event);
+         $equipment = Equipment::find($request->equipment_id);
+         $checkUser = $equipment->user_id;
+         
+         
+         if($checkUser){
+            
+            $user = User::find($checkUser);
+            $event = Gearevent::find($equipment->gearevent_id);
+            
+            
+            return response([
+                'status' => 'fail',
+                'message' => 'Equipment already assigned to '.$user->name .' for ' . $event->title,
+                'data' => $equipment 
+               ], 200);
+            
+            
+         }else{
+            date_default_timezone_set('America/Phoenix');
+            $equipment = Equipment::find($request->equipment_id);
+            $event = Gearevent::find($request->event);
+
+            // add event to equipment
+            $equipment->gearevent()->associate($event);
+            
+            // add assigned pride associate
+            $user = User::find($request->user);
+            $equipment->user()->associate($user);
+            
+            // add gear_request to equipment
+            $gearRequest = Gearrequest::find($request->gear_request);
+            $equipment->gearrequest()->associate($gearRequest);
+
+
+            $equipment->save();
+
+            // assignament stuff
+            $assignArray = array();
+            $assigned = $gearRequest->assigned;
+           
+            
+            if($assigned){
+                $assign = array(
+                    'id' => $equipment->id,
+                    'name' => $equipment->name,
+                    'equipment_request' => $request->equipment_request,
+                    'assign_date'=> Carbon\Carbon::now()
+                );
+            
+                $assignedArray = json_decode($assigned);
+                array_push($assignedArray,$assign);
+                
+                $gearRequest->assigned = json_encode($assignedArray);
+                
+            }else{
+                
+                
+                $assign = array(
+                    array(
+                    'id' => $equipment->id,
+                    'name' => $equipment->name,
+                    'equipment_request' => $request->equipment_request,
+                    'assign_date'=> Carbon\Carbon::now()
+                    ),
+                );
+            
+                $gearRequest->assigned = json_encode($assign);
+            }
+            
+            //$gearRequest->assigned = '';
+           
+           
+            $gearRequest->save();
+            
+            
+            return response([
+                'status' => 'success',
+                'data' => $assign 
+               ], 200);
+           
+           
+         }
+         
         
-        // add assigned pride associate
-        $user = User::find($request->user);
-        $equipment->user()->associate($user);
-        
-        // add gear_request to equipment
-        $gearRequest = Gearrequest::find($request->gear_request);
-        $equipment->gearrequest()->associate($gearRequest);
-        
-        
-        
-        $equipment->save();
-        
-        // assignament stuff
-        $assignArray = array();
-        $assigned = $gearRequest->assigned;
        
-        
-        if($assigned){
-            $assign = array(
-                'id' => $equipment->id,
-                'name' => $equipment->name,
-                'equipment_request' => $request->equipment_request,
-                'assign_date'=> Carbon\Carbon::now()
-            );
-        
-            $assignedArray = json_decode($assigned);
-            array_push($assignedArray,$assign);
-            
-            $gearRequest->assigned = json_encode($assignedArray);
-            
-        }else{
-            
-            
-            $assign = array(
-                array(
-                'id' => $equipment->id,
-                'name' => $equipment->name,
-                'equipment_request' => $request->equipment_request,
-                'assign_date'=> Carbon\Carbon::now()
-                ),
-            );
-        
-            $gearRequest->assigned = json_encode($assign);
-        }
-        
-        //$gearRequest->assigned = '';
-       
-       
-        $gearRequest->save();
-        
-        
-        return response([
-            'status' => 'success',
-            'data' => $assign 
-           ], 200);
         
         
     }
     
     public function unassign_equipment(UnassignEquipmentRequest $request){
         
+       
         $equipment = Equipment::find($request->equipment_id);
         $gearRequest = Gearrequest::find($equipment->gearrequest_id);
+        
         $assigned = $gearRequest->assigned;
         $assignedArray = json_decode($assigned);
         
@@ -267,6 +344,9 @@ class EquipmentController extends Controller
         $equipment->gearrequest_id = null;
         $equipment->gearevent_id = null;
         $equipment->user_id = null;
+        $equipment->chekout = false;
+        $equipment->chekout_date = NULL;
+        $equipment->assigned_to = NULL;
         $equipment->save();
         
         $gearRequest->assigned = json_encode($assignedArray);
@@ -281,23 +361,7 @@ class EquipmentController extends Controller
     }
     
     
-    public function check_out_equipment(CheckOutEquipmentRequest $request){
-        
-        $equipment = Equipment::find($request->id);
-        $equipment->gearevent_id = NULL;
-        $equipment->chekout = false;
-        $equipment->chekout_date = NULL;
-        $equipment->assigned_to = NULL;
-        
-        $equipment->save();
-        
-        return response([
-            'status' => 'success',
-            'data' => $equipment 
-           ], 200);
-        
-        
-    }
+    
     
     
     public function get_all_equipments_for_request(){

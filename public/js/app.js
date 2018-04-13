@@ -7512,6 +7512,132 @@ module.exports = Cancel;
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["a"] = ({
@@ -7529,18 +7655,23 @@ module.exports = Cancel;
             errors: {},
             equipments: null,
             requests: '',
-
             request_id: '',
             request_type: '',
             user_id: '',
-
             assign_id: '',
-
             equipment_request: '',
-            gear_request: ''
+            gear_request: '',
+            error_message: '',
+            logged_user: '',
+            role: '',
+
+            equipment_id_unassign: ''
+
         };
     },
     mounted: function mounted() {
+
+        this.getLoggedUser();
         this.event_id = this.$route.params.id;
         this.retrieve_event();
         this.reloadRequests();
@@ -7553,20 +7684,12 @@ module.exports = Cancel;
             return index + 1;
         },
 
-        unassignEquipment: function unassignEquipment(assigned) {
+        getLoggedUser: function getLoggedUser() {
             var _this = this;
 
-            var equipment_id = assigned.id;
-            var equipment_request = assigned.equipment_request;
-
-            this.$http.post('v1/equipment/unassign', {
-                equipment_id: equipment_id,
-                equipment_request: equipment_request
-
-            }).then(function (response) {
-                if (response.data.status == 'success') {
-                    _this.reloadRequests();
-                }
+            this.$http.get('v1/get-user').then(function (response) {
+                _this.logged_user = response.data.data;
+                _this.role = response.data.data.role;
             });
         },
 
@@ -7666,47 +7789,15 @@ module.exports = Cancel;
             });
         },
 
-        chechIn: function chechIn(event) {
-            var _this5 = this;
-
-            event = this.event_id;
-            var app = this;
-            this.$http.post('v1/equipment/checkin', {
-                event: event,
-                id: this.equipment_id,
-                assigned_to: this.assigned_to
-            }).then(function (response) {
-                if (response.data.status == 'success') {
-                    _this5.retrieve_event();
-                } else {
-                    app.error = true;
-                    app.errors = response.errors;
-                }
-            });
-        },
-
-        checkOut: function checkOut(equipment) {
-            var _this6 = this;
-
-            this.$http.post('v1/equipment/checkout', {
-                id: equipment.id
-            }).then(function (response) {
-                if (response.data.status == 'success') {
-                    _this6.retrieve_event();
-                }
-            });
-        },
-
         assignEquipmentPrepare: function assignEquipmentPrepare(equipment, request) {
             this.equipment_request = equipment.equipment_request;
             this.gear_request = request.id;
             this.user_id = request.user.id;
-
             this.equipment_id = null;
         },
 
         assignEquipment: function assignEquipment(event) {
-            var _this7 = this;
+            var _this5 = this;
 
             var equipment_request = this.equipment_request;
             var gearevent = this.event_id;
@@ -7722,13 +7813,79 @@ module.exports = Cancel;
                 gear_request: gear_request
 
             }).then(function (response) {
-                if (response.data.status == 'success') {
 
-                    _this7.reloadRequests();
+                if (response.data.status == 'success') {
+                    _this5.reloadRequests();
+                    _this5.retrieve_event();
                     $('#assignEquipment').modal('hide');
-                } else {
-                    app.error = true;
-                    app.errors = response.errors;
+                } else if (response.data.status == 'fail') {
+                    $('#assignEquipment').modal('hide');
+                    $('#modalError').modal('show');
+                    _this5.error_message = response.data.message;
+                }
+            });
+        },
+
+        unassignEquipment: function unassignEquipment(assigned) {
+            this.equipment_id_unassign = assigned.id;
+            this.equipment_request = assigned.equipment_request;
+        },
+
+        unassignEquipmentSubmit: function unassignEquipmentSubmit(event) {
+            var _this6 = this;
+
+            var app = this;
+
+            if (this.equipment_id_unassign == this.equipment_id) {
+
+                this.$http.post('v1/equipment/unassign', {
+                    equipment_id: this.equipment_id,
+                    equipment_request: this.equipment_request
+                }).then(function (response) {
+                    if (response.data.status == 'success') {
+                        _this6.reloadRequests();
+                        _this6.retrieve_event();
+                        $('#unassignEquipment').modal('hide');
+                    }
+                });
+            } else {
+                $('#unassignEquipment').modal('hide');
+                $('#modalError').modal('show');
+                this.error_message = 'Wrong Equipment ID';
+            }
+        },
+
+        consignEquipment: function consignEquipment(event) {
+            var _this7 = this;
+
+            var event_id = this.event_id;
+            var app = this;
+            this.$http.post('v1/equipment/consign', {
+                event_id: event_id,
+                id: this.equipment_id,
+                assigned_to: this.assigned_to
+            }).then(function (response) {
+                if (response.data.status == 'success') {
+                    _this7.retrieve_event();
+                    $('#consignEquipment').modal('hide');
+                } else if (response.data.status == 'fail') {
+                    $('#consignEquipment').modal('hide');
+                    $('#modalError').modal('show');
+                    _this7.error_message = response.data.message;
+                }
+            });
+        },
+
+        retireEquipment: function retireEquipment(equipment) {
+            var _this8 = this;
+
+            var app = this;
+            this.$http.post('v1/equipment/retire', {
+                id: this.equipment_id
+            }).then(function (response) {
+                if (response.data.status == 'success') {
+                    _this8.retrieve_event();
+                    $('#retireEquipment').modal('hide');
                 }
             });
         }
@@ -8081,8 +8238,6 @@ module.exports = Cancel;
 
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__LeftNav_vue__ = __webpack_require__(3);
-//
-//
 //
 //
 //
@@ -39163,7 +39318,7 @@ exports = module.exports = __webpack_require__(4)(false);
 
 
 // module
-exports.push([module.i, "\nh2[data-v-49441df3] {\n  margin-top: 60px;\n  border-bottom: solid 1px #17a0db;\n  padding-bottom: 5px;\n}\nh3[data-v-49441df3] {\n  font-size: 1em;\n  font-weight: 300;\n  margin-bottom: 0px;\n  color: #fff;\n}\n.request_title[data-v-49441df3] {\n  padding: 15px;\n  text-transform: uppercase;\n  border-radius: 5px;\n  background: #17a0db;\n  margin-bottom: 15px;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n}\nh5[data-v-49441df3] {\n  font-weight: 700;\n  margin-bottom: 15px;\n  font-size: 1.1em;\n}\nh5.active[data-v-49441df3] {\n    color: #c82333;\n}\nh5.noactive[data-v-49441df3] {\n    color: #438e00;\n}\nul li[data-v-49441df3] {\n  margin-bottom: 15px;\n}\nul li[data-v-49441df3]:last-child {\n    margin-bottom: 0px;\n}\n.request_wrapper[data-v-49441df3] {\n  margin-bottom: 30px;\n  padding: 0px 0px 15px 0px;\n  border-bottom: solid 1px #d1d3d4;\n  margin-bottom: 15px;\n}\n.single_request_wrapper[data-v-49441df3] {\n  margin-bottom: 15px;\n  border: solid 1px #bcbec0;\n  padding: 15px;\n  background: rgba(255, 255, 255, 0.7);\n  border-radius: 5px;\n}\n.single_request_wrapper button[data-v-49441df3] {\n    margin-top: 15px;\n}\n", ""]);
+exports.push([module.i, "\nh2[data-v-49441df3] {\n  margin-top: 60px;\n  border-bottom: solid 1px #17a0db;\n  padding-bottom: 5px;\n}\nh2.small[data-v-49441df3] {\n    font-size: 1.25em;\n    border-bottom: none;\n    padding: 8px;\n    background: #17a0db;\n    color: #fff;\n    font-weight: 300;\n    text-transform: uppercase;\n    border-radius: 5px;\n    margin-top: 30px;\n}\nh2.small[data-v-49441df3]:first-child {\n      margin-top: 0px;\n}\nh3[data-v-49441df3] {\n  font-size: 1em;\n  font-weight: 300;\n  margin-bottom: 0px;\n  color: #fff;\n}\n.request_title[data-v-49441df3] {\n  padding: 15px;\n  text-transform: uppercase;\n  border-radius: 5px;\n  background: #17a0db;\n  margin-bottom: 15px;\n  display: -webkit-box;\n  display: -ms-flexbox;\n  display: flex;\n  -webkit-box-align: center;\n      -ms-flex-align: center;\n          align-items: center;\n  -webkit-box-pack: justify;\n      -ms-flex-pack: justify;\n          justify-content: space-between;\n}\nh5[data-v-49441df3] {\n  font-weight: 700;\n  margin-bottom: 15px;\n  font-size: 1.1em;\n}\nh5.active[data-v-49441df3] {\n    color: #c82333;\n}\nh5.noactive[data-v-49441df3] {\n    color: #438e00;\n}\nul li[data-v-49441df3] {\n  margin-bottom: 15px;\n}\nul li[data-v-49441df3]:last-child {\n    margin-bottom: 0px;\n}\n.request_wrapper[data-v-49441df3] {\n  margin-bottom: 30px;\n  padding: 0px 0px 15px 0px;\n  border-bottom: solid 1px #d1d3d4;\n  margin-bottom: 15px;\n}\n.single_request_wrapper[data-v-49441df3] {\n  margin-bottom: 15px;\n  border: solid 1px #bcbec0;\n  padding: 15px;\n  background: rgba(255, 255, 255, 0.7);\n  border-radius: 5px;\n}\n.single_request_wrapper button[data-v-49441df3] {\n    margin-top: 15px;\n}\n", ""]);
 
 // exports
 
@@ -39187,6 +39342,46 @@ var render = function() {
         {
           staticClass: "modal fade",
           attrs: {
+            id: "modalError",
+            tabindex: "-1",
+            role: "dialog",
+            "aria-labelledby": "modalError",
+            "aria-hidden": "true"
+          }
+        },
+        [
+          _c(
+            "div",
+            { staticClass: "modal-dialog", attrs: { role: "document" } },
+            [
+              _c("div", { staticClass: "modal-content" }, [
+                _vm._m(0),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("p", { staticStyle: { "margin-bottom": "30px" } }, [
+                    _vm._v(_vm._s(_vm.error_message))
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-secondary",
+                      attrs: { type: "button", "data-dismiss": "modal" }
+                    },
+                    [_vm._v("Cancel")]
+                  )
+                ])
+              ])
+            ]
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "modal fade",
+          attrs: {
             id: "assignEquipment",
             tabindex: "-1",
             role: "dialog",
@@ -39200,7 +39395,7 @@ var render = function() {
             { staticClass: "modal-dialog", attrs: { role: "document" } },
             [
               _c("div", { staticClass: "modal-content" }, [
-                _vm._m(0),
+                _vm._m(1),
                 _vm._v(" "),
                 _c("div", { staticClass: "modal-body" }, [
                   _c(
@@ -39286,293 +39481,742 @@ var render = function() {
         ]
       ),
       _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "modal fade",
+          attrs: {
+            id: "unassignEquipment",
+            tabindex: "-1",
+            role: "dialog",
+            "aria-labelledby": "unassignEquipment",
+            "aria-hidden": "true"
+          }
+        },
+        [
+          _c(
+            "div",
+            { staticClass: "modal-dialog", attrs: { role: "document" } },
+            [
+              _c("div", { staticClass: "modal-content" }, [
+                _vm._m(2),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c(
+                    "form",
+                    {
+                      attrs: { autocomplete: "off", method: "post" },
+                      on: {
+                        submit: function($event) {
+                          $event.preventDefault()
+                          return _vm.unassignEquipmentSubmit($event)
+                        }
+                      }
+                    },
+                    [
+                      _c(
+                        "div",
+                        {
+                          staticClass: "form-group",
+                          class: { "has-error": _vm.error && _vm.errors.name }
+                        },
+                        [
+                          _c("label", { attrs: { for: "equipment_id" } }, [
+                            _vm._v("Equipment ID")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.equipment_id,
+                                expression: "equipment_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: {
+                              type: "text",
+                              id: "equipment_id",
+                              required: ""
+                            },
+                            domProps: { value: _vm.equipment_id },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.equipment_id = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _vm.error && _vm.errors.name
+                            ? _c("span", { staticClass: "help-block" }, [
+                                _vm._v(_vm._s(_vm.errors.title))
+                              ])
+                            : _vm._e()
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-secondary",
+                          attrs: { type: "button", "data-dismiss": "modal" }
+                        },
+                        [_vm._v("Cancel")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          attrs: { type: "submit" }
+                        },
+                        [_vm._v("Unassign")]
+                      )
+                    ]
+                  )
+                ])
+              ])
+            ]
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "modal fade",
+          attrs: {
+            id: "consignEquipment",
+            tabindex: "-1",
+            role: "dialog",
+            "aria-labelledby": "consignEquipment",
+            "aria-hidden": "true"
+          }
+        },
+        [
+          _c(
+            "div",
+            { staticClass: "modal-dialog", attrs: { role: "document" } },
+            [
+              _c("div", { staticClass: "modal-content" }, [
+                _vm._m(3),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c(
+                    "form",
+                    {
+                      attrs: { autocomplete: "off", method: "post" },
+                      on: {
+                        submit: function($event) {
+                          $event.preventDefault()
+                          return _vm.consignEquipment($event)
+                        }
+                      }
+                    },
+                    [
+                      _c(
+                        "div",
+                        {
+                          staticClass: "form-group",
+                          class: { "has-error": _vm.error && _vm.errors.name }
+                        },
+                        [
+                          _c("label", { attrs: { for: "equipment_id" } }, [
+                            _vm._v("Equipment ID")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.equipment_id,
+                                expression: "equipment_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: {
+                              type: "text",
+                              id: "equipment_id",
+                              required: ""
+                            },
+                            domProps: { value: _vm.equipment_id },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.equipment_id = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _vm.error && _vm.errors.name
+                            ? _c("span", { staticClass: "help-block" }, [
+                                _vm._v(_vm._s(_vm.errors.title))
+                              ])
+                            : _vm._e()
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "form-group",
+                          class: { "has-error": _vm.error && _vm.errors.name }
+                        },
+                        [
+                          _c("label", { attrs: { for: "assigned_to" } }, [
+                            _vm._v("Associate Name")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.assigned_to,
+                                expression: "assigned_to"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: {
+                              type: "text",
+                              id: "assigned_to",
+                              required: ""
+                            },
+                            domProps: { value: _vm.assigned_to },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.assigned_to = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _vm.error && _vm.errors.name
+                            ? _c("span", { staticClass: "help-block" }, [
+                                _vm._v(_vm._s(_vm.errors.title))
+                              ])
+                            : _vm._e()
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-secondary",
+                          attrs: { type: "button", "data-dismiss": "modal" }
+                        },
+                        [_vm._v("Cancel")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          attrs: { type: "submit" }
+                        },
+                        [_vm._v("Consign")]
+                      )
+                    ]
+                  )
+                ])
+              ])
+            ]
+          )
+        ]
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "modal fade",
+          attrs: {
+            id: "retireEquipment",
+            tabindex: "-1",
+            role: "dialog",
+            "aria-labelledby": "retireEquipment",
+            "aria-hidden": "true"
+          }
+        },
+        [
+          _c(
+            "div",
+            { staticClass: "modal-dialog", attrs: { role: "document" } },
+            [
+              _c("div", { staticClass: "modal-content" }, [
+                _vm._m(4),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c(
+                    "form",
+                    {
+                      attrs: { autocomplete: "off", method: "post" },
+                      on: {
+                        submit: function($event) {
+                          $event.preventDefault()
+                          return _vm.retireEquipment($event)
+                        }
+                      }
+                    },
+                    [
+                      _c(
+                        "div",
+                        {
+                          staticClass: "form-group",
+                          class: { "has-error": _vm.error && _vm.errors.name }
+                        },
+                        [
+                          _c("label", { attrs: { for: "equipment_id" } }, [
+                            _vm._v("Equipment ID")
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.equipment_id,
+                                expression: "equipment_id"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: {
+                              type: "text",
+                              id: "equipment_id",
+                              required: ""
+                            },
+                            domProps: { value: _vm.equipment_id },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.equipment_id = $event.target.value
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _vm.error && _vm.errors.name
+                            ? _c("span", { staticClass: "help-block" }, [
+                                _vm._v(_vm._s(_vm.errors.title))
+                              ])
+                            : _vm._e()
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-secondary",
+                          attrs: { type: "button", "data-dismiss": "modal" }
+                        },
+                        [_vm._v("Cancel")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          attrs: { type: "submit" }
+                        },
+                        [_vm._v("Retire")]
+                      )
+                    ]
+                  )
+                ])
+              ])
+            ]
+          )
+        ]
+      ),
+      _vm._v(" "),
       _c("LeftNav"),
       _vm._v(" "),
       _c("div", { staticClass: "main_container" }, [
-        _vm.event
-          ? _c("div", { staticClass: "row" }, [
-              _c("div", { staticClass: "col-6" }, [
-                _c("h1", [_vm._v(_vm._s(_vm.event.title))])
-              ]),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "col-6" },
-                [
-                  _c("router-link", { attrs: { to: { name: "events" } } }, [
-                    _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary float-right",
-                        attrs: { type: "button" }
-                      },
-                      [_vm._v("Back")]
-                    )
-                  ])
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c("div", { staticClass: "col-12" }, [
-                _c("ul", [
-                  _c("li", [
-                    _vm._v("Dates: "),
-                    _c("strong", [_vm._v(_vm._s(_vm.event.days))])
+        _c(
+          "div",
+          { staticClass: "main_wrapper" },
+          [
+            _vm.event
+              ? _c("div", { staticClass: "row" }, [
+                  _c("div", { staticClass: "col-6" }, [
+                    _c("h1", [_vm._v(_vm._s(_vm.event.title))])
                   ]),
                   _vm._v(" "),
-                  _c("li", [
-                    _vm._v("Address: "),
-                    _c("strong", [_vm._v(_vm._s(_vm.event.address))])
+                  _c(
+                    "div",
+                    { staticClass: "col-6" },
+                    [
+                      _c("router-link", { attrs: { to: { name: "events" } } }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary float-right",
+                            attrs: { type: "button" }
+                          },
+                          [_vm._v("Back")]
+                        )
+                      ])
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "col-12" }, [
+                    _c("ul", [
+                      _c("li", [
+                        _vm._v("Dates: "),
+                        _c("strong", [_vm._v(_vm._s(_vm.event.days))])
+                      ]),
+                      _vm._v(" "),
+                      _c("li", [
+                        _vm._v("Address: "),
+                        _c("strong", [_vm._v(_vm._s(_vm.event.address))])
+                      ])
+                    ])
                   ])
                 ])
-              ])
-            ])
-          : _vm._e(),
-        _vm._v(" "),
-        _vm.requests
-          ? _c(
-              "div",
-              { staticClass: "row" },
-              [
-                _vm._m(1),
-                _vm._v(" "),
-                _vm._l(_vm.requests, function(request) {
-                  return _c("div", { staticClass: "col-12" }, [
-                    _c(
-                      "div",
-                      { staticClass: "request_wrapper" },
-                      [
-                        _c("div", { staticClass: "request_title" }, [
-                          _c("h3", [
-                            _vm._v(
-                              "Requested by: " +
-                                _vm._s(request.user.name) +
-                                " @ " +
-                                _vm._s(request.created_at)
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c(
-                            "button",
-                            {
-                              staticClass: "btn btn-danger float-right",
-                              on: {
-                                click: function($event) {
-                                  _vm.deleteRequest(request)
-                                }
-                              }
-                            },
-                            [_vm._v("Delete\n                            ")]
-                          )
-                        ]),
-                        _vm._v(" "),
-                        _vm._l(request.equipment, function(equipment) {
-                          return _c("div", { staticClass: "row" }, [
-                            _c("div", { staticClass: "col-12" }, [
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.requests && _vm.role.name != "Event Manager"
+              ? _c(
+                  "div",
+                  { staticClass: "row" },
+                  [
+                    _vm._m(5),
+                    _vm._v(" "),
+                    _vm._l(_vm.requests, function(request) {
+                      return _c("div", { staticClass: "col-12" }, [
+                        _c(
+                          "div",
+                          { staticClass: "request_wrapper" },
+                          [
+                            _c("div", { staticClass: "request_title" }, [
+                              _c("h3", [
+                                _vm._v(
+                                  "Requested by: " +
+                                    _vm._s(request.user.name) +
+                                    " @ " +
+                                    _vm._s(request.created_at)
+                                )
+                              ]),
+                              _vm._v(" "),
                               _c(
-                                "div",
-                                { staticClass: "single_request_wrapper" },
-                                [
-                                  _c("div", { staticClass: "row" }, [
-                                    _c(
-                                      "div",
-                                      {
-                                        staticClass: "col-6",
-                                        staticStyle: {
-                                          "border-right": "solid 1px #ccc"
-                                        }
-                                      },
-                                      [
-                                        _c("h5", [
-                                          _vm._v(
-                                            "Requested " + _vm._s(equipment.qty)
-                                          )
-                                        ]),
-                                        _vm._v(" "),
-                                        _c("ul", [
-                                          _c("li", [
-                                            _vm._v("Name: "),
-                                            _c("strong", [
-                                              _vm._v(_vm._s(equipment.name))
-                                            ])
-                                          ]),
-                                          _vm._v(" "),
-                                          _c("li", [
-                                            _vm._v("Category: "),
-                                            _c("strong", [
-                                              _vm._v(_vm._s(equipment.category))
-                                            ])
-                                          ])
-                                        ]),
-                                        _vm._v(" "),
+                                "button",
+                                {
+                                  staticClass: "btn btn-danger float-right",
+                                  on: {
+                                    click: function($event) {
+                                      _vm.deleteRequest(request)
+                                    }
+                                  }
+                                },
+                                [_vm._v("Delete\n                            ")]
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _vm._l(request.equipment, function(equipment) {
+                              return _c("div", { staticClass: "row" }, [
+                                _c("div", { staticClass: "col-12" }, [
+                                  _c(
+                                    "div",
+                                    { staticClass: "single_request_wrapper" },
+                                    [
+                                      _c("div", { staticClass: "row" }, [
                                         _c(
-                                          "button",
+                                          "div",
                                           {
-                                            staticClass: "btn btn-primary",
-                                            attrs: {
-                                              "data-toggle": "modal",
-                                              "data-target": "#assignEquipment"
-                                            },
-                                            on: {
-                                              click: function($event) {
-                                                _vm.assignEquipmentPrepare(
-                                                  equipment,
-                                                  request
-                                                )
-                                              }
+                                            staticClass: "col-6",
+                                            staticStyle: {
+                                              "border-right": "solid 1px #ccc"
                                             }
                                           },
                                           [
-                                            _vm._v(
-                                              "Assign\n                                        "
+                                            _c("h5", [
+                                              _vm._v(
+                                                "Requested " +
+                                                  _vm._s(equipment.qty)
+                                              )
+                                            ]),
+                                            _vm._v(" "),
+                                            _c("ul", [
+                                              _c("li", [
+                                                _vm._v("Name: "),
+                                                _c("strong", [
+                                                  _vm._v(_vm._s(equipment.name))
+                                                ])
+                                              ]),
+                                              _vm._v(" "),
+                                              _c("li", [
+                                                _vm._v("Category: "),
+                                                _c("strong", [
+                                                  _vm._v(
+                                                    _vm._s(equipment.category)
+                                                  )
+                                                ])
+                                              ])
+                                            ]),
+                                            _vm._v(" "),
+                                            _c(
+                                              "button",
+                                              {
+                                                staticClass: "btn btn-primary",
+                                                attrs: {
+                                                  "data-toggle": "modal",
+                                                  "data-target":
+                                                    "#assignEquipment"
+                                                },
+                                                on: {
+                                                  click: function($event) {
+                                                    _vm.assignEquipmentPrepare(
+                                                      equipment,
+                                                      request
+                                                    )
+                                                  }
+                                                }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  "Assign\n                                        "
+                                                )
+                                              ]
                                             )
                                           ]
-                                        )
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    _c("div", { staticClass: "col-6" }, [
-                                      _c(
-                                        "h5",
-                                        { class: _vm.checkAssigned(equipment) },
-                                        [
-                                          _vm._v(
-                                            "Assigned " +
-                                              _vm._s(
-                                                _vm.calculateAssigned(equipment)
+                                        ),
+                                        _vm._v(" "),
+                                        _c("div", { staticClass: "col-6" }, [
+                                          _c(
+                                            "h5",
+                                            {
+                                              class: _vm.checkAssigned(
+                                                equipment
                                               )
-                                          )
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "table",
-                                        { staticClass: "table table-striped" },
-                                        [
-                                          _vm._m(2, true),
+                                            },
+                                            [
+                                              _vm._v(
+                                                "Assigned " +
+                                                  _vm._s(
+                                                    _vm.calculateAssigned(
+                                                      equipment
+                                                    )
+                                                  )
+                                              )
+                                            ]
+                                          ),
                                           _vm._v(" "),
                                           _c(
-                                            "tbody",
-                                            _vm._l(request.assigned, function(
-                                              assigned,
-                                              index
-                                            ) {
-                                              return assigned.equipment_request ==
-                                                equipment.equipment_request
-                                                ? _c("tr", [
-                                                    _c(
-                                                      "td",
-                                                      {
-                                                        staticClass:
-                                                          "align-middle"
-                                                      },
-                                                      [
-                                                        _vm._v(
-                                                          _vm._s(
-                                                            _vm.doMath(index)
-                                                          )
-                                                        )
-                                                      ]
-                                                    ),
-                                                    _vm._v(" "),
-                                                    _c(
-                                                      "td",
-                                                      {
-                                                        staticClass:
-                                                          "align-middle"
-                                                      },
-                                                      [
-                                                        _vm._v(
-                                                          _vm._s(assigned.id)
-                                                        )
-                                                      ]
-                                                    ),
-                                                    _vm._v(" "),
-                                                    _c(
-                                                      "td",
-                                                      {
-                                                        staticClass:
-                                                          "align-middle"
-                                                      },
-                                                      [
-                                                        _vm._v(
-                                                          _vm._s(assigned.name)
-                                                        )
-                                                      ]
-                                                    ),
-                                                    _vm._v(" "),
-                                                    _c(
-                                                      "td",
-                                                      {
-                                                        staticClass:
-                                                          "align-middle"
-                                                      },
-                                                      [
-                                                        _vm._v(
-                                                          _vm._s(
-                                                            _vm._f(
-                                                              "formatDate"
-                                                            )(
-                                                              assigned
-                                                                .assign_date
-                                                                .date
-                                                            )
-                                                          )
-                                                        )
-                                                      ]
-                                                    ),
-                                                    _vm._v(" "),
-                                                    _c(
-                                                      "td",
-                                                      {
-                                                        staticClass:
-                                                          "align-middle"
-                                                      },
-                                                      [
-                                                        _c(
-                                                          "button",
-                                                          {
-                                                            staticClass:
-                                                              "btn btn-warning btn-sm float-right",
-                                                            attrs: {
-                                                              type: "button"
+                                            "table",
+                                            {
+                                              staticClass: "table table-striped"
+                                            },
+                                            [
+                                              _vm._m(6, true),
+                                              _vm._v(" "),
+                                              _c(
+                                                "tbody",
+                                                _vm._l(
+                                                  request.assigned,
+                                                  function(assigned, index) {
+                                                    return assigned.equipment_request ==
+                                                      equipment.equipment_request
+                                                      ? _c("tr", [
+                                                          _c(
+                                                            "td",
+                                                            {
+                                                              staticClass:
+                                                                "align-middle"
                                                             },
-                                                            on: {
-                                                              click: function(
-                                                                $event
-                                                              ) {
-                                                                _vm.unassignEquipment(
-                                                                  assigned
+                                                            [
+                                                              _vm._v(
+                                                                _vm._s(
+                                                                  _vm.doMath(
+                                                                    index
+                                                                  )
                                                                 )
-                                                              }
-                                                            }
-                                                          },
-                                                          [_vm._v("Unassign")]
-                                                        )
-                                                      ]
-                                                    )
-                                                  ])
-                                                : _vm._e()
-                                            })
+                                                              )
+                                                            ]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "td",
+                                                            {
+                                                              staticClass:
+                                                                "align-middle"
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                _vm._s(
+                                                                  assigned.id
+                                                                )
+                                                              )
+                                                            ]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "td",
+                                                            {
+                                                              staticClass:
+                                                                "align-middle"
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                _vm._s(
+                                                                  assigned.name
+                                                                )
+                                                              )
+                                                            ]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "td",
+                                                            {
+                                                              staticClass:
+                                                                "align-middle"
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                _vm._s(
+                                                                  _vm._f(
+                                                                    "formatDate"
+                                                                  )(
+                                                                    assigned
+                                                                      .assign_date
+                                                                      .date
+                                                                  )
+                                                                )
+                                                              )
+                                                            ]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "td",
+                                                            {
+                                                              staticClass:
+                                                                "align-middle"
+                                                            },
+                                                            [
+                                                              _c(
+                                                                "button",
+                                                                {
+                                                                  staticClass:
+                                                                    "btn btn-warning btn-sm float-right",
+                                                                  attrs: {
+                                                                    type:
+                                                                      "button",
+                                                                    "data-toggle":
+                                                                      "modal",
+                                                                    "data-target":
+                                                                      "#unassignEquipment"
+                                                                  },
+                                                                  on: {
+                                                                    click: function(
+                                                                      $event
+                                                                    ) {
+                                                                      _vm.unassignEquipment(
+                                                                        assigned
+                                                                      )
+                                                                    }
+                                                                  }
+                                                                },
+                                                                [
+                                                                  _vm._v(
+                                                                    "Unassign"
+                                                                  )
+                                                                ]
+                                                              )
+                                                            ]
+                                                          )
+                                                        ])
+                                                      : _vm._e()
+                                                  }
+                                                )
+                                              )
+                                            ]
                                           )
-                                        ]
-                                      )
-                                    ])
-                                  ])
-                                ]
-                              )
-                            ])
-                          ])
-                        })
-                      ],
-                      2
-                    )
+                                        ])
+                                      ])
+                                    ]
+                                  )
+                                ])
+                              ])
+                            })
+                          ],
+                          2
+                        )
+                      ])
+                    })
+                  ],
+                  2
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _vm._l(_vm.equipments, function(equipmentcat) {
+              return _vm.equipments && _vm.role.name != "Equipment Manager"
+                ? _c("div", { staticClass: "row" }, [
+                    _vm._m(7, true),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass: "col-12",
+                        staticStyle: { "margin-bottom": "60px" }
+                      },
+                      [
+                        _c("h2", { staticClass: "small" }, [
+                          _vm._v(_vm._s(equipmentcat.category))
+                        ]),
+                        _vm._v(" "),
+                        _c("table", { staticClass: "table table-striped" }, [
+                          _vm._m(8, true),
+                          _vm._v(" "),
+                          _c(
+                            "tbody",
+                            _vm._l(equipmentcat.equipments, function(
+                              equipment
+                            ) {
+                              return _c("tr", [
+                                _c("td", { staticClass: "align-middle" }, [
+                                  _vm._v(_vm._s(equipment.id))
+                                ]),
+                                _vm._v(" "),
+                                _c("td", { staticClass: "align-middle" }, [
+                                  _vm._v(_vm._s(equipment.name))
+                                ]),
+                                _vm._v(" "),
+                                _c("td", { staticClass: "align-middle" }, [
+                                  _vm._v(_vm._s(equipment.user.name))
+                                ]),
+                                _vm._v(" "),
+                                _c("td", { staticClass: "align-middle" }, [
+                                  _vm._v(_vm._s(equipment.chekout_date))
+                                ]),
+                                _vm._v(" "),
+                                _c("td", { staticClass: "align-middle" }, [
+                                  _vm._v(_vm._s(equipment.assigned_to))
+                                ])
+                              ])
+                            })
+                          )
+                        ])
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _vm._m(9, true),
+                    _vm._v(" "),
+                    _vm._m(10, true)
                   ])
-                })
-              ],
-              2
-            )
-          : _vm._e()
+                : _vm._e()
+            })
+          ],
+          2
+        )
       ])
     ],
     1
@@ -39587,7 +40231,107 @@ var staticRenderFns = [
       _c(
         "h4",
         { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Error!")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "h4",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
         [_vm._v("Assign Equipment")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "h4",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Unassign Equipment")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "h4",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Consign Equipment")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c(
+        "h4",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Retire Equipment")]
       ),
       _vm._v(" "),
       _c(
@@ -39628,6 +40372,70 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", { attrs: { width: "30%" } })
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-12" }, [
+      _c("h2", [_vm._v("Event Assigned Equipment")])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", { attrs: { width: "5%" } }, [_vm._v("ID")]),
+        _vm._v(" "),
+        _c("th", { attrs: { width: "25%" } }, [_vm._v("Name")]),
+        _vm._v(" "),
+        _c("th", { attrs: { width: "20%" } }, [_vm._v("Assigned To")]),
+        _vm._v(" "),
+        _c("th", { attrs: { width: "20%" } }, [_vm._v("Consigned @")]),
+        _vm._v(" "),
+        _c("th", { attrs: { width: "25%" } }, [_vm._v("Consigned To")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-6" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-primary btn-block btn-lg",
+          attrs: {
+            type: "button",
+            "data-toggle": "modal",
+            "data-target": "#consignEquipment"
+          }
+        },
+        [_vm._v("Consign")]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-6" }, [
+      _c(
+        "button",
+        {
+          staticClass: "btn btn-warning btn-block btn-lg",
+          attrs: {
+            type: "button",
+            "data-toggle": "modal",
+            "data-target": "#retireEquipment"
+          }
+        },
+        [_vm._v("Retire")]
+      )
     ])
   }
 ]
@@ -41013,45 +41821,29 @@ var render = function() {
                             ]),
                             _vm._v(" "),
                             _c("td", { staticClass: "align-middle" }, [
-                              _vm._v(_vm._s(equipment.serial))
+                              _vm._v(_vm._s(equipment.user))
                             ]),
                             _vm._v(" "),
-                            _c(
-                              "td",
-                              { staticClass: "align-middle text-center" },
-                              [
-                                equipment.chekout > 0
-                                  ? _c("span", { staticClass: "checkout" }, [
-                                      _c("i", { staticClass: "fas fa-circle" })
-                                    ])
-                                  : _vm._e()
-                              ]
-                            ),
+                            _c("td", { staticClass: "align-middle" }, [
+                              _vm._v(_vm._s(equipment.consigned))
+                            ]),
                             _vm._v(" "),
                             _c(
                               "td",
                               { staticClass: "align-middle" },
                               [
-                                equipment.chekout > 0
-                                  ? _c(
-                                      "router-link",
-                                      {
-                                        attrs: {
-                                          to: {
-                                            name: "event",
-                                            params: {
-                                              id: equipment.gearevent_id
-                                            }
-                                          }
-                                        }
-                                      },
-                                      [
-                                        _vm._v(
-                                          _vm._s(equipment.gearevent_title)
-                                        )
-                                      ]
-                                    )
-                                  : _vm._e()
+                                _c(
+                                  "router-link",
+                                  {
+                                    attrs: {
+                                      to: {
+                                        name: "event",
+                                        params: { id: equipment.gearevent_id }
+                                      }
+                                    }
+                                  },
+                                  [_vm._v(_vm._s(equipment.gearevent_title))]
+                                )
                               ],
                               1
                             ),
@@ -41150,17 +41942,15 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("thead", [
       _c("tr", [
-        _c("th", { attrs: { width: "5%" } }, [_vm._v("ID")]),
+        _c("th", { attrs: { width: "10%" } }, [_vm._v("ID")]),
         _vm._v(" "),
         _c("th", { attrs: { width: "20%" } }, [_vm._v("Name")]),
         _vm._v(" "),
-        _c("th", { attrs: { width: "10%" } }, [_vm._v("Serial")]),
+        _c("th", { attrs: { width: "20%" } }, [_vm._v("Assigned")]),
         _vm._v(" "),
-        _c("th", { staticClass: "text-center", attrs: { width: "25%" } }, [
-          _vm._v("Checked Out")
-        ]),
+        _c("th", { attrs: { width: "20%" } }, [_vm._v("Consigned")]),
         _vm._v(" "),
-        _c("th", { attrs: { width: "30%" } }, [_vm._v("Event")]),
+        _c("th", { attrs: { width: "20%" } }, [_vm._v("Event")]),
         _vm._v(" "),
         _c("th", { attrs: { width: "10%" } })
       ])

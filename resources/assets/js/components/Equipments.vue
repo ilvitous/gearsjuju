@@ -209,11 +209,11 @@
                     <table class="table table-striped">
                     <thead>
                       <tr>
-                        <th width="5%">ID</th>
+                        <th width="10%">ID</th>
                         <th width="20%">Name</th>
-                        <th width="10%">Serial</th>
-                        <th class="text-center" width="25%">Checked Out</th>
-                        <th width="30%">Event</th>
+                        <th width="20%">Assigned</th>
+                        <th width="20%">Consigned</th>
+                        <th width="20%">Event</th>
                         <th width="10%"></th>
                       </tr>
                     </thead>
@@ -237,13 +237,11 @@
                         
                        
                         
-                        <td class="align-middle">{{ equipment.serial }}</td>
-                        <td class="align-middle text-center">
-                        <span class="checkout" v-if="equipment.chekout > 0"><i class="fas fa-circle"></i></span></td>
-                        <td class="align-middle">
+                        <td class="align-middle">{{ equipment.user }}</td>
+                        <td class="align-middle">{{ equipment.consigned }}</td>
                         
-                        <router-link :to="{ name: 'event', params: { id: equipment.gearevent_id }}" v-if="equipment.chekout > 0">{{ equipment.gearevent_title }}</router-link>
-                            
+                        <td class="align-middle">
+                        <router-link :to="{ name: 'event', params: { id: equipment.gearevent_id }}">{{ equipment.gearevent_title }}</router-link>
                         </td>
                         
                         <td class="align-middle">

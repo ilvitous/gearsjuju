@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Gearevent;
 use App\Equipment;
 use App\Category;
+use App\User;
 use App\Http\Requests\AddNewEventRequest;
 use App\Http\Requests\DeleteEventRequest;
 use App\Http\Requests\EditEventRequest;
@@ -135,6 +136,9 @@ class GearEventController extends Controller
                 );
                 
                 foreach($equipments_filtered as $equipment_filtered){
+                    
+                    $user = User::find($equipment_filtered->user_id);
+                    
                     $equipment_to_add = array(
                         'id' => $equipment_filtered->id,           
                         'name' => $equipment_filtered->name,
@@ -143,8 +147,12 @@ class GearEventController extends Controller
                         'chekout_date' => $equipment_filtered->chekout_date,
                         'assigned_to' => $equipment_filtered->assigned_to,
                         'category_name' => $category_obj->name,
-                        'category_id' => $category
+                        'category_id' => $category,
+                        'user' => $user
                     );
+                    
+                    
+                    
                     array_push($category_array['equipments'], $equipment_to_add);
                 }
                 array_push($equipments_array, $category_array);

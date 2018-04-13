@@ -36,7 +36,7 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('v1/delete-role', 'UserController@deleteRole');
   Route::get('v1/roles-all', 'UserController@userCategoriesAll');
   Route::post('v1/set-role', 'UserController@setRole');
-  Route::post('v1/get-user', 'UserController@get_user');
+  Route::get('v1/get-user', 'UserController@get_user');
   Route::post('v1/delete-user', 'UserController@delete_user');
   Route::post('v1/edit-user', 'UserController@editUser');
 });
@@ -80,8 +80,8 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   Route::post('v1/equipment/add', 'EquipmentController@add_new_equipment');
   Route::post('v1/equipment/delete', 'EquipmentController@delete_equipment');
   Route::post('v1/equipment/edit', 'EquipmentController@edit_equipment');
-  Route::post('v1/equipment/checkin', 'EquipmentController@check_in_equipment');
-  Route::post('v1/equipment/checkout', 'EquipmentController@check_out_equipment');
+  Route::post('v1/equipment/consign', 'EquipmentController@consign_equipment');
+  Route::post('v1/equipment/retire', 'EquipmentController@retire_equipment');
   Route::get('v1/equipment/all', 'EquipmentController@get_all_equipments');
   Route::get('v1/equipment/request/all', 'EquipmentController@get_all_equipments_for_request');
   

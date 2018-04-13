@@ -1,6 +1,26 @@
 <template>
 
     <main>
+        
+        <!-- Modal error -->
+            <div class="modal fade" id="modalError" tabindex="-1" role="dialog" aria-labelledby="modalError" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Error!</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                    <div class="modal-body">
+                    <p style="margin-bottom: 30px;">{{error_message}}</p>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    </div>
+                </div>
+              </div>
+            </div>
+         <!-- Modal error -->
+       
        <!-- Modal assign -->
             <div class="modal fade" id="assignEquipment" tabindex="-1" role="dialog" aria-labelledby="assignEquipment" aria-hidden="true">
               <div class="modal-dialog" role="document">
@@ -11,37 +31,116 @@
                       <span aria-hidden="true">&times;</span>
                     </button>
                   </div>
-                  
                 <div class="modal-body">
-                    
                     <form autocomplete="off" @submit.prevent="assignEquipment" method="post">
-                       
                         <div class="form-group" v-bind:class="{ 'has-error': error && errors.name }">
                             <label for="equipment_id">Equipment ID</label>
                             <input type="text" id="equipment_id" class="form-control" v-model="equipment_id" required>
                             <span class="help-block" v-if="error && errors.name">{{ errors.title }}</span>
                         </div>
-                      
-                      
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-primary">Assign</button>
-                        
-                        
-                        </form>
-                
-                
+                    </form>
                 </div>
-                
-
                 </div>
               </div>
             </div>
          <!-- Modal assign -->
+         
+         
+          <!-- Modal unassign -->
+            <div class="modal fade" id="unassignEquipment" tabindex="-1" role="dialog" aria-labelledby="unassignEquipment" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Unassign Equipment</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                <div class="modal-body">
+                    <form autocomplete="off" @submit.prevent="unassignEquipmentSubmit" method="post">
+                        <div class="form-group" v-bind:class="{ 'has-error': error && errors.name }">
+                            <label for="equipment_id">Equipment ID</label>
+                            <input type="text" id="equipment_id" class="form-control" v-model="equipment_id" required>
+                            <span class="help-block" v-if="error && errors.name">{{ errors.title }}</span>
+                        </div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Unassign</button>
+                    </form>
+                </div>
+                </div>
+              </div>
+            </div>
+         <!-- Modal unassign -->
+         
+         
+         
+         <!-- Modal consign -->
+            <div class="modal fade" id="consignEquipment" tabindex="-1" role="dialog" aria-labelledby="consignEquipment" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Consign Equipment</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                <div class="modal-body">
+                    <form autocomplete="off" @submit.prevent="consignEquipment" method="post">
+                        <div class="form-group" v-bind:class="{ 'has-error': error && errors.name }">
+                            <label for="equipment_id">Equipment ID</label>
+                            <input type="text" id="equipment_id" class="form-control" v-model="equipment_id" required>
+                            <span class="help-block" v-if="error && errors.name">{{ errors.title }}</span>
+                        </div>
+                        <div class="form-group" v-bind:class="{ 'has-error': error && errors.name }">
+                            <label for="assigned_to">Associate Name</label>
+                            <input type="text" id="assigned_to" class="form-control" v-model="assigned_to" required>
+                            <span class="help-block" v-if="error && errors.name">{{ errors.title }}</span>
+                        </div>
+                       
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Consign</button>
+                    </form>
+                </div>
+                </div>
+              </div>
+            </div>
+         <!-- Modal consign -->
+         
+         
+         <!-- Modal retire -->
+            <div class="modal fade" id="retireEquipment" tabindex="-1" role="dialog" aria-labelledby="retireEquipment" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h4 class="modal-title" id="exampleModalLabel">Retire Equipment</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                <div class="modal-body">
+                    <form autocomplete="off" @submit.prevent="retireEquipment" method="post">
+                        <div class="form-group" v-bind:class="{ 'has-error': error && errors.name }">
+                            <label for="equipment_id">Equipment ID</label>
+                            <input type="text" id="equipment_id" class="form-control" v-model="equipment_id" required>
+                            <span class="help-block" v-if="error && errors.name">{{ errors.title }}</span>
+                        </div>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Retire</button>
+                    </form>
+                </div>
+                </div>
+              </div>
+            </div>
+         <!-- Modal retire -->
         
         
         
     <LeftNav></LeftNav>
         <div class="main_container">
+           <div class="main_wrapper">
+               
            
             <div class="row" v-if="event">
                 
@@ -64,42 +163,8 @@
             </div>
             
             
-            <!--<div class="row" v-if="equipments" v-for="equipmentcat in equipments">-->
-            <!--    <div class="col-12">-->
-            <!--        <h2>{{equipmentcat.category}}</h2>-->
-                    <!--<table class="table table-striped">-->
-                    <!--<thead>-->
-                    <!--  <tr>-->
-                    <!--    <th width="5%">ID</th>-->
-                    <!--    <th width="25%">Name</th>-->
-                    <!--    <th width="20%">Serial</th>-->
-                    <!--    <th width="20%">Checked In</th>-->
-                    <!--    <th width="20%">Assigned To</th>-->
-                    <!--    <th width="10%"></th>-->
-                    <!--  </tr>-->
-                    <!--</thead>-->
-                    <!--<tbody>-->
-                    <!--  <tr v-for="equipment in equipmentcat.equipments">-->
-                    <!--    <td class="align-middle">{{ equipment.id }}</td>-->
-                    <!--    <td class="align-middle">{{ equipment.name }}</td>-->
-                    <!--    <td class="align-middle">{{ equipment.serial }}</td>-->
-                    <!--    <td class="align-middle">{{ equipment.chekout_date }}</td>-->
-                    <!--     <td class="align-middle">{{ equipment.assigned_to }}</td> -->
-                    <!--    <td class="align-middle">-->
-                    <!--        <button  -->
-                    <!--        v-on:click="checkOut(equipment)"-->
-                    <!--        class="btn btn-warning float-right">-->
-                    <!--        Check Out-->
-                    <!--        </button>-->
-                    <!--    </td>-->
-                    <!--  </tr>-->
-                    <!--</tbody>-->
-                    <!--</table>-->
-            <!--    </div>-->
-            <!--</div>-->
             
-            
-            <div class="row" v-if="requests">
+            <div class="row" v-if="requests && role.name != 'Event Manager'">
                 <div class="col-12">
                     <h2>Requests</h2>
                 </div>
@@ -163,6 +228,8 @@
                                                         <td class="align-middle">
                                                         <button type="button" 
                                                         class="btn btn-warning btn-sm float-right"
+                                                        data-toggle="modal" 
+                                                        data-target="#unassignEquipment"
                                                         v-on:click="unassignEquipment(assigned)"
                                                         >Unassign</button>   
                                                         </td>
@@ -191,9 +258,68 @@
                     </div>
                 </div>
                 <!--request wrapper-->
+            </div>
+            
+            
+            <!--device wrapper-->
+            <div class="row" v-if="equipments && role.name != 'Equipment Manager'" v-for="equipmentcat in equipments">
+                
+                <div class="col-12">
+                    <h2>Event Assigned Equipment</h2>
+                </div>
+                
+                <div class="col-12" style="margin-bottom: 60px;">
+                    <h2 class="small">{{equipmentcat.category}}</h2>
+                    <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th width="5%">ID</th>
+                        <th width="25%">Name</th>
+                        <th width="20%">Assigned To</th>
+                        <th width="20%">Consigned @</th>
+                        <th width="25%">Consigned To</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr v-for="equipment in equipmentcat.equipments">
+                        <td class="align-middle">{{ equipment.id }}</td>
+                        <td class="align-middle">{{ equipment.name }}</td>
+                        <td class="align-middle">{{ equipment.user.name }}</td>
+                        <td class="align-middle">{{ equipment.chekout_date }}</td>
+                         <td class="align-middle">{{ equipment.assigned_to }}</td> 
+                       
+                      </tr>
+                    </tbody>
+                    </table>
+                </div>
+                
+                
+                
+                <div class="col-6">
+                    <button type="button" 
+                    class="btn btn-primary btn-block btn-lg"
+                    data-toggle="modal" 
+                    data-target="#consignEquipment"
+                    >Consign</button>   
+                </div>
+                
+                
+                <div class="col-6">
+                    <button type="button" 
+                    class="btn btn-warning btn-block btn-lg"
+                    data-toggle="modal" 
+                    data-target="#retireEquipment"
+                    >Retire</button>   
+                </div>
+                
+                
+                
                 
             </div>
-        
+            
+            
+            
+        </div>
         </div>
     </main>
      
@@ -219,19 +345,24 @@
                 errors: {},
                 equipments : null,
                 requests: '',
-                
                 request_id : '',
                 request_type: '',
                 user_id: '',
-                
                 assign_id: '',
-                
                 equipment_request: '',
                 gear_request : '',
+                error_message : '',
+                logged_user : '',
+                role: '',
+                
+                equipment_id_unassign: '',
+                
             };
         },
         
         mounted() {
+            
+            this.getLoggedUser();
             this.event_id = this.$route.params.id
             this.retrieve_event()
             this.reloadRequests()
@@ -244,24 +375,13 @@
             },
             
             
-            unassignEquipment : function (assigned){
-             
-              let equipment_id = assigned.id;
-              let equipment_request = assigned.equipment_request;
-              
-              this.$http.post(`v1/equipment/unassign`, {
-                        equipment_id : equipment_id,
-                        equipment_request : equipment_request
-                        
-                    }).then(response => {
-                        if(response.data.status == 'success'){
-                            this.reloadRequests();
-                            }
-                    })
-              
-             
-              
+            getLoggedUser : function(){
+               this.$http.get('v1/get-user').then(response => {
+                   this.logged_user = response.data.data;
+                   this.role = response.data.data.role;
+                }) 
             },
+            
             
             checkAssigned : function (equipment){
                 
@@ -367,7 +487,6 @@
             },
             
             deleteRequest : function (request){
-                
                 this.$http.post(`v1/request/delete`, {
                                 id : request.id,
                     }).then(response => {
@@ -379,44 +498,11 @@
                 
             },
             
-            
-            chechIn : function (event){
-                event = this.event_id
-                var app = this
-                this.$http.post(`v1/equipment/checkin`, {
-                                event : event,
-                                id : this.equipment_id,
-                                assigned_to : this.assigned_to,
-                            }).then(response => {
-                                if(response.data.status == 'success'){
-                                    this.retrieve_event();
-                                }
-                                else{
-                                    app.error = true;
-                                    app.errors = response.errors;
-                                }
-                            })
-            },
-            
-            checkOut : function (equipment){
-                 this.$http.post(`v1/equipment/checkout`, {
-                                id : equipment.id,
-                            }).then(response => {
-                                if(response.data.status == 'success'){
-                                    this.retrieve_event();
-                                }
-                            })
-               
-            },
-            
             assignEquipmentPrepare : function(equipment, request){
                 this.equipment_request = equipment.equipment_request;
                 this.gear_request = request.id;
                 this.user_id = request.user.id;
-                
                 this.equipment_id = null;
-                
-                
             },
             
             
@@ -437,21 +523,97 @@
                                 gear_request : gear_request
                                 
                             }).then(response => {
+                                
                                 if(response.data.status == 'success'){
-                                    
                                     this.reloadRequests();
+                                    this.retrieve_event();
                                     $('#assignEquipment').modal('hide');
                                 }
-                                else{
-                                    app.error = true;
-                                    app.errors = response.errors;
+                                
+                                else if(response.data.status == 'fail'){
+                                    $('#assignEquipment').modal('hide');
+                                    $('#modalError').modal('show');
+                                    this.error_message = response.data.message
                                 }
+                                
+                                
                             })
                             
                             
             },
             
             
+            unassignEquipment : function (assigned){
+                this.equipment_id_unassign = assigned.id;
+                this.equipment_request = assigned.equipment_request;
+
+            },
+                
+            
+              
+            unassignEquipmentSubmit: function (event){
+                    var app = this
+                    
+                    if(this.equipment_id_unassign == this.equipment_id){
+                       
+                        this.$http.post(`v1/equipment/unassign`, {
+                            equipment_id : this.equipment_id,
+                            equipment_request : this.equipment_request
+                        }).then(response => {
+                            if(response.data.status == 'success'){
+                                this.reloadRequests();
+                                this.retrieve_event();
+                                 $('#unassignEquipment').modal('hide');
+                                }
+                        })
+                        
+                    }else{
+                        $('#unassignEquipment').modal('hide');
+                        $('#modalError').modal('show');
+                        this.error_message = 'Wrong Equipment ID'
+                    }
+                    
+                    
+              
+                
+            },
+            
+            
+            
+            
+            consignEquipment : function (event){
+                let event_id = this.event_id
+                var app = this
+                this.$http.post(`v1/equipment/consign`, {
+                                event_id : event_id,
+                                id : this.equipment_id,
+                                assigned_to : this.assigned_to,
+                            }).then(response => {
+                                if(response.data.status == 'success'){
+                                    this.retrieve_event();
+                                    $('#consignEquipment').modal('hide');
+                                    
+                                }else if(response.data.status == 'fail'){
+                                    $('#consignEquipment').modal('hide');
+                                    $('#modalError').modal('show');
+                                    this.error_message = response.data.message
+                                }
+                                
+                            })
+            },
+            
+            retireEquipment : function (equipment){
+                var app = this
+                 this.$http.post(`v1/equipment/retire`, {
+                                id : this.equipment_id,
+                            }).then(response => {
+                                if(response.data.status == 'success'){
+                                    this.retrieve_event();
+                                    $('#retireEquipment').modal('hide');
+                                }
+                            })
+               
+            },
             
            
             
@@ -470,6 +632,24 @@
        margin-top: 60px;
        border-bottom: solid 1px $blue;
        padding-bottom: 5px;
+       
+       &.small{
+           font-size: 1.25em;
+           border-bottom: none;
+           padding: 8px;
+           background: $blue;
+           color: #fff;
+           font-weight: 300;
+           text-transform: uppercase;
+           -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            margin-top: 30px;
+            
+            &:first-child{
+                margin-top: 0px;
+            }
+       }
    }
    
    h3{

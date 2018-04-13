@@ -164,7 +164,7 @@
             
             
             
-            <div class="row" v-if="requests && role.name != 'Event Manager'">
+            <div class="row" v-if="requests.length > 0 && role.name != 'Event Manager'">
                 <div class="col-12">
                     <h2>Requests</h2>
                 </div>
@@ -458,9 +458,12 @@
             
             reloadRequests : function(){
                 
-                this.$http.get('v1/request/all').then(response => {
-                    let requests = response.data.data;
-                    let array_parsed = []
+                 this.$http.post(`v1/request/all`, {
+                            event_id : this.event_id,
+                            }).then(response => {
+                           
+                           let requests = response.data.data;
+                            let array_parsed = []
                    
                     let arrayLength = requests.length;
                     for (var i = 0; i < arrayLength; i++) {
@@ -481,8 +484,11 @@
                     
                     this.requests = requests
                     
-                    
-                })  
+                        })
+                        
+                        
+                
+               
                 
             },
             

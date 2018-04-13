@@ -7756,7 +7756,10 @@ module.exports = Cancel;
         reloadRequests: function reloadRequests() {
             var _this3 = this;
 
-            this.$http.get('v1/request/all').then(function (response) {
+            this.$http.post('v1/request/all', {
+                event_id: this.event_id
+            }).then(function (response) {
+
                 var requests = response.data.data;
                 var array_parsed = [];
 
@@ -39885,7 +39888,7 @@ var render = function() {
                 ])
               : _vm._e(),
             _vm._v(" "),
-            _vm.requests && _vm.role.name != "Event Manager"
+            _vm.requests.length > 0 && _vm.role.name != "Event Manager"
               ? _c(
                   "div",
                   { staticClass: "row" },

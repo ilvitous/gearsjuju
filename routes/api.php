@@ -93,7 +93,7 @@ Route::group(['middleware' => 'jwt.auth'], function(){
   // requests
   Route::post('v1/request/add', 'GearRequestController@add_new_request');
   Route::post('v1/request/delete', 'GearRequestController@delete_request');
-  Route::get('v1/request/all', 'GearRequestController@get_all_requests');
+  Route::post('v1/request/all', 'GearRequestController@get_all_requests');
 
   
   

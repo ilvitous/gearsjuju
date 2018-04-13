@@ -8,6 +8,7 @@ use App\User;
 use App\Gearrequest;
 use App\Http\Requests\AddNewRequestRequest;
 use App\Http\Requests\DeleteRequestRequest;
+use App\Http\Requests\GetRequestRequest;
 
 class GearRequestController extends Controller
 {
@@ -28,9 +29,9 @@ class GearRequestController extends Controller
            ], 200);
     }
     
-    public function get_all_requests(){
+    public function get_all_requests(GetRequestRequest $request){
         
-        $gearRequests = Gearrequest::orderBy('created_at', 'desc')->get();
+        $gearRequests = Gearrequest::orderBy('created_at', 'desc')->where('gearevent_id', $request->event_id)->get();
         
         foreach($gearRequests as $gearRequest){
             $user = User::find($gearRequest->users_id);

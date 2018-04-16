@@ -28,6 +28,7 @@ class EditEventRequest extends FormRequest
             'title' => 'required',
             'address' => 'required',
             'dates' => 'required',
+            'p_number' => 'required',
         ];
     }
 }

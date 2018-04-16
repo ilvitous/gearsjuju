@@ -24,6 +24,12 @@
                             <span class="help-block" v-if="error && errors.name">{{ errors.title }}</span>
                         </div>
                         
+                        <div class="form-group" v-bind:class="{ 'has-error': error && errors.name }">
+                            <label for="p_number">P#</label>
+                            <input type="text" id="p_number" class="form-control" v-model="p_number" required>
+                            <span class="help-block" v-if="error && errors.name">{{ errors.title }}</span>
+                        </div>
+                        
                         
                         <div class="form-group" v-bind:class="{ 'has-error': error && errors.name }">
                             <label for="dates">Dates</label>
@@ -76,6 +82,13 @@
                         <div class="form-group" v-bind:class="{ 'has-error': error && errors.name }">
                             <label for="title">Title</label>
                             <input type="text" id="title" class="form-control" v-model="title" required>
+                            <span class="help-block" v-if="error && errors.name">{{ errors.title }}</span>
+                        </div>
+                        
+                        
+                        <div class="form-group" v-bind:class="{ 'has-error': error && errors.name }">
+                            <label for="p_number">P#</label>
+                            <input type="text" id="p_number" class="form-control" v-model="p_number" required>
                             <span class="help-block" v-if="error && errors.name">{{ errors.title }}</span>
                         </div>
                         
@@ -157,6 +170,7 @@
                 <thead>
                   <tr>
                     <th>Title</th>
+                    <th>P#</th>
                     <th>Dates</th>
                     <th>Address</th>
                     <th class="text-center">Assigned Equipments</th>
@@ -166,6 +180,7 @@
                 <tbody>
                   <tr v-for="event in events">
                     <td class="align-middle">{{ event.title }}</td>
+                    <td class="align-middle">{{ event.p_number }}</td>
                     <td class="align-middle">{{ event.days }}</td>
                     <td class="align-middle">{{ event.address }}</td>
                     <td class="align-middle text-center">
@@ -180,6 +195,7 @@
                         :data-title="event.title"
                         :data-dates="event.dates"
                         :data-address="event.address"
+                        :data-p_number="event.p_number"
                         data-toggle="modal" data-target="#editEvent"
                         class="btn btn-secondary float-right">
                         Edit
@@ -219,6 +235,7 @@
                 multi: true,
                 dates: [],
                 event_id: null,
+                p_number: '',
             };
         },
         
@@ -271,7 +288,7 @@
                         
                         
                         
-                        var event_edited = {title:arrayOfEvents[i].title, address:arrayOfEvents[i].address, days:days, dates:arrayOfEvents[i].dates,  id:arrayOfEvents[i].id , equipments : arrayOfEvents[i].equipments };
+                        var event_edited = {title:arrayOfEvents[i].title, p_number:arrayOfEvents[i].p_number, address:arrayOfEvents[i].address, days:days, dates:arrayOfEvents[i].dates,  id:arrayOfEvents[i].id , equipments : arrayOfEvents[i].equipments };
                         
                         array_filtered.push(event_edited);
                         
@@ -297,11 +314,13 @@
             var title = app.title
             var dates = app.dates
             var address = app.address
+            var p_number = app.p_number
 
             this.$http.post(`v1/events/add`, {
                             title : title,
                             dates : dates,
-                            address : address
+                            address : address,
+                            p_number : p_number
                         }).then(response => {
                             if(response.data.status == 'success'){
                                 this.refresTable()
@@ -324,11 +343,13 @@
             var dates = app.dates
             var address = app.address
             var id = this.event_id
+            var p_number = this.p_number
             
             this.$http.post(`v1/events/edit`, {
                             title : title,
                             dates : dates,
                             address : address,
+                            p_number : p_number,
                             id : id
                         }).then(response => {
                             if(response.data.status == 'success'){
@@ -349,7 +370,8 @@
                 this.event_id =  event.target.dataset.id
                 this.title = event.target.dataset.title
                 this.dates = JSON.parse(event.target.dataset.dates);
-                this.address = event.target.dataset.address
+                this.address = event.target.dataset.address;
+                this.p_number = event.target.dataset.p_number;
 
                 var array_of_dates = [];
                 var arrayLength = this.dates.length;

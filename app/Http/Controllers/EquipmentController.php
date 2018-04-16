@@ -264,7 +264,8 @@ class EquipmentController extends Controller
             // add gear_request to equipment
             $gearRequest = Gearrequest::find($request->gear_request);
             $equipment->gearrequest()->associate($gearRequest);
-
+            
+            $equipment->equipment_request = $request->equipment_request;
 
             $equipment->save();
 
@@ -323,40 +324,76 @@ class EquipmentController extends Controller
     
     public function unassign_equipment(UnassignEquipmentRequest $request){
         
-       
+        $gearEvent = null;
         $equipment = Equipment::find($request->equipment_id);
-        $gearRequest = Gearrequest::find($equipment->gearrequest_id);
-        
-        $assigned = $gearRequest->assigned;
-        $assignedArray = json_decode($assigned);
-        
-        $assignedEquipments = $assignedArray;
-        
-        $i=0;
-        foreach($assignedEquipments as $assignedEquipment){
-            if( $assignedEquipment->equipment_request == $request->equipment_request){
-                unset($assignedArray[0]);
-            }
-            $i++;
+
+        if($equipment){
+            $gearEvent = Gearevent::find($equipment->gearevent_id);
         }
-        $assignedArray = array_values($assignedArray);
         
+        
+        // check if device is assigned
+        if($gearEvent && $equipment){
+            $gearRequest = Gearrequest::find($equipment->gearrequest_id);
+            $user = User::find($equipment->user_id);
+            $assigned = $gearRequest->assigned;
+            $assignedArray = json_decode($assigned);
+            $assignedEquipments = $assignedArray;
+        
+            $i=0;
+            foreach($assignedEquipments as $assignedEquipment){
+                if( $assignedEquipment->equipment_request == $equipment->equipment_request){
+                unset($assignedArray[0]);
+                }
+                $i++;
+            }
+        $assignedArray = array_values($assignedArray);
+        $response = array(
+            'gearrequest_id' => $equipment->gearrequest_id,
+            'gearevent_name' => $gearEvent->title,
+            'user' => $user->name,
+            'assigned_to' => $equipment->assigned_to
+        );
         $equipment->gearrequest_id = null;
         $equipment->gearevent_id = null;
         $equipment->user_id = null;
         $equipment->chekout = false;
         $equipment->chekout_date = NULL;
         $equipment->assigned_to = NULL;
+        $equipment->equipment_request = NULL;
         $equipment->save();
-        
         $gearRequest->assigned = json_encode($assignedArray);
         $gearRequest->save();
         
-        
-         return response([
+        return response([
             'status' => 'success',
-            'data' =>  $assignedArray 
+            'data' =>  $response 
            ], 200);
+           
+        }else{
+            
+            if($equipment){
+                $response = array(
+                'message' => 'This euipment was not assigned to any event',
+                );
+            }else{
+                $response = array(
+                'message' => 'Equipment not found',
+                );
+            }
+            
+        
+            
+            return response([
+            'status' => 'error',
+            'data' =>  $response 
+           ], 200);
+           
+           
+        }
+        
+        
+        
         
     }
     

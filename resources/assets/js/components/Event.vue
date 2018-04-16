@@ -145,7 +145,7 @@
             <div class="row" v-if="event">
                 
                 <div class="col-6">
-                    <h1>{{event.title}}</h1>
+                    <h1>{{event.title}} - P#:{{event.p_number}}</h1>
                 </div>
 
                 <div class="col-6">
@@ -262,13 +262,13 @@
             
             
             <!--device wrapper-->
-            <div class="row" v-if="equipments && role.name != 'Equipment Manager'" v-for="equipmentcat in equipments">
+            <div class="row" v-if="equipments && equipments.length > 0 && role.name != 'Equipment Manager'">
                 
                 <div class="col-12">
                     <h2>Event Assigned Equipment</h2>
                 </div>
                 
-                <div class="col-12" style="margin-bottom: 60px;">
+                <div class="col-12" style="margin-bottom: 60px;"  v-for="equipmentcat in equipments">
                     <h2 class="small">{{equipmentcat.category}}</h2>
                     <table class="table table-striped">
                     <thead>
@@ -448,7 +448,7 @@
                                     first_day = moment(dates_array[0]).format('LL');
                                     days = first_day
                                 }
-                                this.event =  {title:response.data.data.title, address:response.data.data.address, days:days, id:response.data.data.id, archived : response.data.data.archived };
+                                this.event =  {title:response.data.data.title, p_number:response.data.data.p_number, address:response.data.data.address, days:days, id:response.data.data.id, archived : response.data.data.archived };
                                 
                             }
                         })

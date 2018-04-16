@@ -24,9 +24,11 @@ class GearEventController extends Controller
         foreach ($events as $event){
             $equipments = Equipment::where('gearevent_id', $event->id)->get();
             
+
             if( count($equipments) > 0 ){
                 
                 $event->equipments = true;
+                
             }
         }
         
@@ -54,6 +56,8 @@ class GearEventController extends Controller
         $event->dates = $dates;
         $event->address = $request->address;
         $event->archived = false;
+        $event->p_number = $request->p_number;
+        
         
         $event->save();
         
@@ -94,6 +98,7 @@ class GearEventController extends Controller
         $event->title = $request->title;
         $event->address = $request->address;
         $event->dates = $dates;
+        $event->p_number = $request->p_number;
         $event->save();
         
         return response([

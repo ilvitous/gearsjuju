@@ -1,13 +1,12 @@
 <template>
    
     <div class="main_nav_container">
-        <img class="img-responsive" src="/assets/img/gearsjuju.svg">
+        <router-link :to="{ name: 'dashboard' }"><img class="img-responsive" src="/assets/img/gearsjuju.svg"></router-link>
         <ul>
             <li>
                 <router-link :to="{ name: 'request' }">Request</router-link>
             </li>
-            
-            
+           
             <li>
                 <router-link :to="{ name: 'events' }">Events</router-link>
                 <ul>

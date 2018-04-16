@@ -25,7 +25,6 @@ class UnassignEquipmentRequest extends FormRequest
     {
         return [
             'equipment_id' => 'required',
-            'equipment_request' => 'required',
             
         ];
     }

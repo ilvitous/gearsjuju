@@ -120,6 +120,7 @@ class UserController extends Controller
         $user_to_add = array(
             'name'=>$user->name,
             'email'=>$user->email,
+            'id'=>$user->id,
             'role' => $role,
         );
         

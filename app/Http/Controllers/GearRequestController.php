@@ -23,6 +23,7 @@ class GearRequestController extends Controller
         $user = User::find($request->user);
         $gearrequest->users()->associate($user);
         $gearrequest->save();
+        
         return response([
             'status' => 'success',
             'data' => $gearrequest,

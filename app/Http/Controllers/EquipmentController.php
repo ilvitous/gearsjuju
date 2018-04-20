@@ -241,11 +241,13 @@ class EquipmentController extends Controller
             $user = User::find($checkUser);
             $event = Gearevent::find($equipment->gearevent_id);
             
+             $response = array(
+                'message' => 'Equipment already assigned to '.$user->name .' for ' . $event->title,
+                );
             
             return response([
                 'status' => 'fail',
-                'message' => 'Equipment already assigned to '.$user->name .' for ' . $event->title,
-                'data' => $equipment 
+                'data' => $response, 
                ], 200);
             
             

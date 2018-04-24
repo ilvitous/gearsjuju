@@ -169,11 +169,14 @@ class EquipmentController extends Controller
             // check if already assigend
             $assignedCheck = $equipment->assigned_to;
             
+            $response = array(
+                'message' => 'Equipment was already consigned to '. $assignedCheck, 
+                );
+            
             if($assignedCheck){
                 return response([
                 'status' => 'fail',
-                'message' => 'Equipment was already consigned to '. $assignedCheck, 
-                'data' => $equipment 
+                'data' => $response 
                ], 200);
 
                    
@@ -193,10 +196,13 @@ class EquipmentController extends Controller
             
         }else{
             
+            $response = array(
+                'message' => 'Equipment is not assigned to this event', 
+                );
+            
             return response([
                 'status' => 'fail',
-                'message' => 'Equipment is not assigned to this event', 
-                'data' => $equipment 
+                'data' =>  $respons 
                ], 200);
             
             

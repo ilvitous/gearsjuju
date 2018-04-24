@@ -176,7 +176,7 @@ class EquipmentController extends Controller
             if($assignedCheck){
                 return response([
                 'status' => 'fail',
-                'data' => $response 
+                'data' => $response, 
                ], 200);
 
                    
@@ -202,7 +202,7 @@ class EquipmentController extends Controller
             
             return response([
                 'status' => 'fail',
-                'data' =>  $respons 
+                'data' =>  $response,
                ], 200);
             
             
